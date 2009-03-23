@@ -1,0 +1,41 @@
+ 			(   !hazard   & 
+				  [](TRUE) & 
+ 				( []<>(TRUE) )
+ 			)
+			->
+			( (  ( InitPolicy1 )
+				 |  ( InitPolicy2 ) ) & 
+			 (!checkPoint ) & 
+			 (!stop ) & 
+			 []( PolicyX -> (next(PolicyY) | next(PolicyZ) ) ) &   -- Successors 
+ 			 []( (next(hazard)) -> (next(stop)) ) & 
+			 []( (!next(hazard)) -> (!next(stop)) ) & 
+			 []( ( ((next(hazard)) | stop) & bit0) -> (next(bit0)) ) & 
+			 []( ( ((next(hazard)) | stop) & !bit0) -> (!next(bit0)) ) & 
+			 []( ( ((next(hazard)) | stop) & bit1) -> (next(bit1)) ) & 
+			 []( ( ((next(hazard)) | stop) & !bit1) -> (!next(bit1)) ) & 
+			 []( ( ((next(hazard)) | stop) & bit2) -> (next(bit2)) ) & 
+			 []( ( ((next(hazard)) | stop) & !bit2) -> (!next(bit2)) ) & 
+			 []( ( ((next(hazard)) | stop) & bit3) -> (next(bit3)) ) & 
+			 []( ( ((next(hazard)) | stop) & !bit3) -> (!next(bit3)) ) & 
+			 []( ( ((next(hazard)) | stop) & bit4) -> (next(bit4)) ) & 
+			 []( ( ((next(hazard)) | stop) & !bit4) -> (!next(bit4)) ) & 
+			 []( ( ((next(hazard)) | stop) & bit5) -> (next(bit5)) ) & 
+			 []( ( ((next(hazard)) | stop) & !bit5) -> (!next(bit5)) ) & 
+			 []( ( ((next(hazard)) | stop) & bit6) -> (next(bit6)) ) & 
+			 []( ( ((next(hazard)) | stop) & !bit6) -> (!next(bit6)) ) & 
+			 []( ( ((next(hazard)) | stop) & bit7) -> (next(bit7)) ) & 
+			 []( ( ((next(hazard)) | stop) & !bit7) -> (!next(bit7)) ) & 
+			 []( ( ((next(hazard)) | stop) & bit8) -> (next(bit8)) ) & 
+			 []( ( ((next(hazard)) | stop) & !bit8) -> (!next(bit8)) ) & 
+			 []( ((next(RnH))& ( HidePolicy)) -> ( next(HidePolicy)) ) & 
+			 []( (!(next(RnH))  & !(next(hazard)) & !(stop)) -> !( !next(HidePolicy)) )  & 
+			 []( ((next(CheckPoint1)) | (next(CheckPoint2)) | (next(CheckPoint3)) | (next(CheckPoint4)) )
+				 <-> (next(checkPoint)) ) & 
+			 []( !(next(AvoidPolicy)) ) & 
+			 []<>( ( CheckPoint1) | RnH | stop ) & 
+			 []<>( (CheckPoint2) | RnH | stop ) & 
+			 []<>( ( CheckPoint3) | RnH | stop ) & 
+			 []<>( ( CheckPoint4) | RnH | stop )& 
+			 []<>( ( HidePolicy) | !RnH | stop ) 
+  			)

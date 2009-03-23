@@ -1,0 +1,449 @@
+%
+%\documentclass[journal,peerreview]{IEEEtran}
+\documentclass[journal,twoside]{IEEEtran}
+%
+% If IEEEtran.cls has not been installed into the LaTeX system files,
+% manually specify the path to it like:
+% \documentclass[journal]{../sty/IEEEtran}
+
+\usepackage{cite}
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\usepackage[dvips]{graphicx}
+
+%\renewcommand{\baselinestretch}{0.999}
+
+% *** MATH PACKAGES ***
+%
+\usepackage[cmex10]{amsmath}
+\interdisplaylinepenalty=2500
+\usepackage{mathrsfs}
+\usepackage{mathbbol}
+\usepackage{amsbsy,amssymb}
+\usepackage{alg}
+\usepackage{array}
+\usepackage[tight,footnotesize]{subfigure}
+\usepackage{url}
+\usepackage{psfrag}
+\usepackage[usenames]{color}
+\definecolor{DarkGreen}{rgb}{0,0.75,0.0}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\def \TROTITLE {{ The Timid Night Watchman :\\ Controller Synthesis in the ``Real'' World}}
+\def \SHORTTROTITLE {{ Controller Synthesis in the ``Real'' World }}
+
+\newenvironment{definition}   
+  {\begin{description}\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}
+    \item[{\bf Definition:}]}
+  {\end{description}}
+
+% XXXX
+\newenvironment{proof}   
+  {\begin{description}\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}
+    \item[{\bf Proof:}]}
+    {\end{description}\begin{flushleft} $\Box$ \end{flushleft}}
+\newtheorem{prop}{Proposition}
+\newtheorem{lem}{Lemma}[section]
+\newcommand{\reapp}[1]{Appendix~\ref{app:#1}}
+\newcommand{\resec}[1]{Section~\ref{sec:#1}}
+\newcommand{\req}[1]{(\ref{eqn:#1})}
+\newcommand{\rechap}[1]{Chapter~\ref{chap:#1}}
+\newcommand{\refig}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\retab}[1]{Table~\ref{tab:#1}}
+\newcommand{\realg}[1]{Algorithm~\ref{alg:#1}}
+\newcommand{\llem}[2]{\begin{lem}\label{lem:#1} #2 \end{lem}}
+\newcommand{\relem}[1]{Lemma~\ref{lem:#1}}
+
+\newcommand{ \prl } [1] {  \left( #1 \right) }
+\newcommand{ \brl } [1] {  \left[ #1 \right] }
+\newcommand{ \crl } [1] { \left\{ #1 \right\} }
+\def \atan {\ensuremath{\mathrm{atan2}}}
+
+\newcommand{\bbm}{\begin{bmatrix}}
+\newcommand{\ebm}{\end{bmatrix}}
+\newcommand{\mbf}{\mathbf}
+\newcommand{ \mrm } [1] { \mathrm{ #1 } }
+\newcommand{\bba}{\begin{array}}
+\newcommand{\eba}{\end{array}}
+\def \argmax {\operatornamewithlimits{arg\,max}}
+\def \argmin {\operatornamewithlimits{arg\,min}}
+\renewcommand{\lim} {\operatornamewithlimits{lim}}
+\renewcommand{\min} {\operatornamewithlimits{min}}
+\renewcommand{\max} {\operatornamewithlimits{max}}
+\DeclareMathOperator*{\union} {\bigcup}
+\newcommand{\ptwod}[2]{ \frac{\partial^2{#1}}{\partial{#2}^2 }  }
+\newcommand{\pd}[2]{ \frac{\partial{#1}}{\partial{#2} }  }
+\newcommand{\spec}[1] {\ensuremath{\left\lceil\!\!\left\rceil {#1}
+                                         \right\lceil\!\!\right\rceil}}
+
+\def \eg  {for example\ }
+\def \ie  {\emph{i.e.\ }}
+\newcommand{\absvl}[1]{ \left| #1 \right| }
+\newcommand{\norm}[1]{ \left\| {#1} \right\| }
+\def \ea  {\emph{et~al.}\ }
+\def \R   {\ensuremath{\mrm{I\!R}}}
+\def \r   {\R}
+\def \Rn  {\ensuremath{\R^n}}
+\def \Rt  {\ensuremath{\R^2}}
+\def \B   {\ensuremath{\mathbf{\mathcal{B}}}} % Ball
+\def \dB   {\ensuremath{\partial \B}} % Ball boundary
+\def \dBi   {\ensuremath{\partial \B_{\mrm{in}}}} % Ball boundary
+\def \dBe   {\ensuremath{\partial \B_{\mrm{out}}}} % Ball boundary
+\def \vp  {\ensuremath{\varphi}}
+\def \vpq {\ensuremath{\vp\!\prl{\pq}}}
+\def \ra  {\ensuremath{\rightarrow}}
+\def \pit {\ensuremath{\frac{\pi}{2}}}
+\def \rt  {\ensuremath{\rl{2}}}
+\def \pq  {\ensuremath{q}}
+\def \qd  {\ensuremath{{q_d}}}
+\def \qb  {\ensuremath{{q_b}}}
+\def \qg  {\ensuremath{{q_\mrm{goal}}}}
+\def \gg  {\ensuremath{{\gamma_\mrm{c}}}}
+\def \Bmax {\ensuremath{\beta_{\mrm{max}}}}
+\def \Bq   {\ensuremath{\beta\prl{\pq}}}
+\def \Beta {\ensuremath{\beta}}
+\def \qbmax {\ensuremath{\pq_\beta}}
+\def \TR    {\ensuremath{T}}
+\def \TRP  {\ensuremath{T\!\prl{\P}}}
+\def \TRq  {\ensuremath{T\!\prl{\pq}}}
+\def \zv  {\ensuremath{\mbf{0}}}
+\def \gz {\ensuremath{{g_0}}}   % g vector
+\def \X   {\ensuremath{X}}
+\def \Xh  {\ensuremath{\hat{\X}}}
+\def \Xoq {\ensuremath{\X\!\prl{\pq}}}
+\def \Xhq {\ensuremath{\hat{\X}\!\prl{\pq}}}
+\def \DtX {\ensuremath{\dot{\X}\!\prl{\pq}}} 
+\def \dX  {\ensuremath{\dot{\X}}}
+\def \DqX {\ensuremath{D_\pq \X}}
+\def \DqXh {\ensuremath{D_\pq\Xh}}
+\def \g  {\ensuremath{\gamma}}
+\def \gd {\ensuremath{\gamma_d}}
+\def \gb {\ensuremath{\gamma_b}}
+\def \Dqg  {\ensuremath{D_\pq \gamma}}
+\def \DqG  {\ensuremath{D_\pq \gamma}}
+\def \DqbGb {\ensuremath{D_\qb \gamma_b}}
+\def \DqGb {\ensuremath{D_{\varphi\!\prl{\pq}} \gamma_b}}
+\def \DqP  {\ensuremath{D_\pq\varphi}}
+\def \Soq  {\ensuremath{s\!\prl{\pq}}}
+\def \DqGg {\ensuremath{D_\pq\!\gg}}
+\def \Xhg  {\ensuremath{\hat{\X}_g}}
+\def \Xgq  {\ensuremath{\X_g\!\prl{\pq}}}
+\def \Sgq  {\ensuremath{s_g\!\prl{\pq}}}
+\def \Mh   {\ensuremath{\hat{M}}}
+\def \Nh   {\ensuremath{\hat{N}}}
+\def \Ph   {\ensuremath{\hat{P}}}
+\def \dqh  {\ensuremath{\dot{\hat{\pq}}}}
+\def \Pv   {\ensuremath{P}}
+\def \Qv   {\ensuremath{Q}}
+\def \dQ   {\ensuremath{dQ}}
+\def \u  {\ensuremath{u}}
+\def \dq  {\ensuremath{\dot{\pq}}}
+\def \ddq {\ensuremath{\ddot{\pq}}}
+\def \Vmax {\ensuremath{\mathrm{V_{max}}}}
+\def \Amax {\ensuremath{\mathrm{A_{max}}}}
+\def \Umax {\ensuremath{\mathrm{A_{max}}}} % U max is max acceleration
+\def \xv  {\ensuremath{\mbf{x}}}
+\def \Ccomp {\ensuremath{\Phi_\P}}    % Component controller in cell \P
+\def \Ccompt {\ensuremath{\Phi_{\P t}}}  % Component controller in cell \Pt
+
+\def \CP     {\ensuremath{\Phi}}    % Generic control policy
+\def \Cflow  {\ensuremath{\Phi_F}}  % Flow  control policy
+\def \Calign {\ensuremath{\Phi_A}}  % Align control policy
+\def \Csave  {\ensuremath{\Phi_S}}  % Save  control policy
+\def \Cjoin  {\ensuremath{\Phi_J}} % Join  control policy
+\def \Cgoal  {\ensuremath{\Phi_G}}  % Goal  control policy
+\def \Ctrack {\ensuremath{\Phi_T}}  % Track control policy
+\def \eh  {\ensuremath{\hat{e}}}
+\def \vh  {\ensuremath{\hat{v}}}
+\def \qh  {\ensuremath{\hat{\pq}}}
+\def \dqh  {\ensuremath{\dot{\hat{\pq}}}}
+\def \K   {\ensuremath{\mathcal{K}}} %  decomposition
+\def \Vs  {\ensuremath{\mathcal{V}}} % Velocity limit set
+\def \Us  {\ensuremath{\mathcal{U}}} %  collection of policies
+\def \Usp  {\ensuremath{\Us^\prime}}
+\def \Vs  {\ensuremath{\mathcal{V}}} % Velocity limit set
+\def \As  {\ensuremath{\mathcal{A}}} % Acceleration limit set
+\def \Zs  {\ensuremath{\mathcal{Z}}} % Aligned set
+\def \Cs  {\ensuremath{\mathcal{C}}} % Collision free set
+\def \Ss  {\ensuremath{\mathcal{S}}} % Saveable set
+\def \L   {\ensuremath{\Lambda}}
+\def \GL  {\ensuremath{\Gamma_{\Lambda}}} % prepares graph for \Us
+\def \GpL {\ensuremath{\Gamma^\prime_{\Lambda}}} % partial order for \Us
+\def \Lp  {\ensuremath{\Lambda^\prime}} %  ordered collection of policies
+\newcommand{ \Do }[1]  {\ensuremath{\mathbf{\mathscr{D}}\!\prl{#1}}}
+\newcommand{ \Go }[1]  {\ensuremath{\mathbf{\mathscr{G}}\!\prl{#1}}}
+\def \pp  {\ensuremath{p}}
+\def \nv  {\ensuremath{{n}}}
+\def \ev  {\ensuremath{{e}}}
+
+\newcommand{ \Ball }[2] {\ensuremath{\B\prl{{#1} , {#2} }}}
+\newcommand{ \bigO }[1] {\ensuremath{\mbf{\mrm{O}}\prl{{#1}}}}
+
+\def \P    {\ensuremath{\mathbf{\mathcal{P}}}} % Cell or Polytope
+\def \Pt   {\ensuremath{\mathcal{P}_t}} % Target cell
+\def \Ps   {\ensuremath{\mathcal{P}_s}} % Start cell
+\def \Pg   {\ensuremath{\mathcal{P}_g}} % Goal cell
+\def \Pi   {\ensuremath{\mathcal{P}_i}} % i^{th} cell
+\def \Pj   {\ensuremath{\mathcal{P}_j}} % j^{th} cell
+\def \D    {\ensuremath{\mathcal{D}}}   % Disk
+\def \Pb   {\ensuremath{\bar{\mathbf{\mathcal{P}}}}} % Cell or Polytope
+\def \vsurf {\ensuremath{\mathcal{V}}}
+\def \usurf {\ensuremath{\mathcal{U}}}
+\def \lyapA {\ensuremath{\eta_\gamma}}
+\def \lyapV {\ensuremath{\eta_{v}}}
+\def \lyapU {\ensuremath{\eta_{u}}}
+\def \lyapS {\ensuremath{\eta_{s}}}
+\def \lyapP {\ensuremath{\eta_\phi}}
+\def \DlyapV {\ensuremath{\dot{\eta}_{v}}}
+\def \DlyapU {\ensuremath{\dot{\eta}_{u}}}
+\def \DlyapP {\ensuremath{\dot{\eta}_\phi}}
+
+\def \qos  {\ensuremath{{\tilde{q}\!\prl{s}}}}
+\def \qot  {\ensuremath{{q\!\prl{t}}}}
+\def \qoz  {\ensuremath{{q\!\prl{0}}}}
+\def \qoo  {\ensuremath{{q\!\prl{1}}}}
+\def \dqosp {\ensuremath{{\tilde{q}^\prime\prl{s}}}}
+\def \dqot  {\ensuremath{{\dot{q}\!\prl{t}}}}
+\def \dqoz  {\ensuremath{{\dot{q}\!\prl{0}}}}
+\def \u  {\ensuremath{u}}
+\def \n  {\ensuremath{n}}
+\def \TP  {\ensuremath{\mathcal{TP}}} % Tangent bundle of polygon
+
+\def \NOT {\ensuremath{\neg}}
+\def \AND {\ensuremath{\wedge}}
+\def \OR  {\ensuremath{\vee}}
+\def \NEXT {\ensuremath{\bigcirc}}
+\def \ALWAYS {\ensuremath{\Box}}
+\def \EVENTUALLY {\ensuremath{\Diamond}}
+\def \UNTIL {\ensuremath{\mathscr{U}}}  
+\def \TRUE {\ensuremath{\mathrm{TRUE}}}
+\def \IMPLIES {\ensuremath{\Rightarrow}}
+\def \IFF  {\ensuremath{\Leftrightarrow}}
+\def \PARK {\ensuremath{\mathrm{Park}}}
+\def \HAZ  {\ensuremath{\mathrm{Hazard}}}
+\def \STOP {\ensuremath{\mathrm{Stop}}}
+\def \LEFT {\ensuremath{\mathrm{LeftTurn}}}
+\def \RIGHT {\ensuremath{\mathrm{RightTurn}}}
+\def \PARKING {\ensuremath{\mathrm{Parking}}}
+\def \LEAVING {\ensuremath{\mathrm{Leaving}}}
+\def \TRUE    {\ensuremath{\mathrm{True}}}
+\def \FALSE   {\ensuremath{\mathrm{False}}}
+\def \SQ  {SQ\ }
+\def \PF  {PF\ }
+
+\def \RXi {\ensuremath{R\prl{\Xi_i}}}
+\def \Rg {\ensuremath{R\prl{g}}}
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+
+\title{\TROTITLE}
+
+\author{David~C.~Conner,~\IEEEmembership{Member,~IEEE,}
+  Hadas~Kress-Gazit,~\IEEEmembership{Member,~IEEE,}% \\
+  \thanks{D. Conner is with TORC Technologies, Blacksburg, VA, 24060
+    (dcconner@ri.cmu.edu).  H. Kress-Gazit is with Cornell
+    (hadas@cornell.edu).}%
+  \thanks{This work was funded by the Army Research Office MURI DAAD
+    19-02-01-0383.}%
+  \thanks{Manuscript received February, 2009.}
+ }
+
+% The paper headers
+\markboth{IEEE Transactions on Robotics,~Vol.~\#, No.~\#} %, January~2009}%
+{Conner and Kress-Gazit: \SHORTTROTITLE }
+%{ Peer review: \SHORTTROTITLE}
+
+
+% make the title area
+\maketitle
+
+
+\begin{abstract}
+
+  DUMMY TEXT as place holder.  
+
+\end{abstract}
+% IEEEtran.cls defaults to using nonbold math in the Abstract.
+% This preserves the distinction between vectors and scalars. However,
+% if the journal you are submitting to favors bold math in the abstract,
+% then you can use LaTeX's standard command \boldmath at the very start
+% of the abstract to achieve this. Many IEEE journals frown on math
+% in the abstract anyway.
+
+% Note that keywords are not normally used for peerreview papers.
+\begin{IEEEkeywords}
+  hybrid controls, automata-synthesis, feedback control
+\end{IEEEkeywords}
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+
+\section{Introduction}
+\IEEEPARstart{T}{HE} problem considered in this paper is to synthesize
+a control policy that satisfies high .. blah blah blah.
+
+
+\section{Related Work}
+
+Ideally, the coupled navigation and control problem of moving the
+system through its environment would be addressed with a single
+feedback control policy that respects the system constraints.  A
+common approach to designing global controllers is based on potential
+functions; however, simple potential based methods are subject to
+local minima~\cite{kod_87}.  There are methods of defining
+\emph{navigation functions}, which are potential fields with a single
+minimum at the goal~\cite{rim_kod_92,con_grup_93}.  These global
+potential based approaches can have relatively small gradients in some
+regions and large gradients in others leading to differing behavior
+over the workspace.  Kinodynamic approaches address the problem by
+planning over a discrete set of states, which are connected by directed edges
+that correspond to feasible trajectories~\cite{donald_93}.
+
+% Main body of the paper
+\section{Approach}
+\label{sec:approach}
+
+{\Large \emph 
+section A mostly goes away, but it might be worth mentioning
+  to in one paragraph to set stage for Meta policy and future work
+  section.
+
+Section B gets cut down to intro of the toy problem.
+
+Section C is the meat of approach section.  Introduce a toy problem to relate policy composition, prepares graph, and automaton synthesis.
+
+Section D was some text that I didn't use in thesis; move this into section C if we want to make this formal presentation.}
+
+\input{tro_approach}
+
+\section{Experimental Setup}
+\label{sec:setup}
+
+{\large  Describe the experimental setup including robot model, policy design and deployment.}
+
+\input{tro_setup}
+
+\section{Automata Based Planning}
+\label{sec:planning_detailed}
+\input{tro_automata}
+
+
+\section{Conclusion}
+\label{sec:concl}
+ \input{tro_concl}
+
+
+\appendices
+%\section*{Appendix: Policy Design Details}
+%Appendix one text goes here.
+
+% % use section* for acknowledgement
+% \section*{Acknowledgment}
+
+
+% The authors would like to thank...
+
+
+% Can use something like this to put references on a page
+% by themselves when using endfloat and the captionsoff option.
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+\bibliography{IEEEabrv,dcc_hkg}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+% \begin{thebibliography}{1}
+
+% \bibitem{IEEEhowto:kopka}
+% H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
+%   0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+
+% \end{thebibliography}
+
+% biography section
+% 
+% If you have an EPS/PDF photo (graphicx package needed) extra braces are
+% needed around the contents of the optional argument to biography to prevent
+% the LaTeX parser from getting confused when it sees the complicated
+% \includegraphics command within an optional argument. (You could create
+% your own custom macro containing the \includegraphics command to make things
+% simpler here.)
+%\begin{biography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
+% or if you just want to reserve a space for a photo:
+
+\vspace{-0.5in}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,
+    keepaspectratio]{conne}}]{David~C.~Conner} (M '00) received the
+  Ph.D. in Robotics from Carnegie Mellon University in 2007; he
+  received the M.S. in Robotics in 2004.  His research interests
+  include applications of differential geometry, hybrid systems, and
+  control theory for mobile robot navigation and control.  He
+  graduated with B.S.\ and M.S.\ degrees in Mechanical Engineering
+  from Virginia Tech (VPI\&SU) in 1991 and 2000 respectively.  He is
+  currently a research scientist with TORC Technologies in Blacksburg,
+  Virginia.
+\end{IEEEbiography}
+
+\vspace{-0.2in}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,
+    keepaspectratio]{conne}}]{Hadas~Kress-Gazit} (M '??) received the
+  Ph.D.\ in Mechanical Engineering from the University of Pennsylvania
+  in 2008.
+
+\end{IEEEbiography}
+
+% You can push biographies down or up by placing
+% a \vfill before or after them. The appropriate
+% use of \vfill depends on what kind of text is
+% on the last page and whether or not the columns
+% are being equalized.
+
+%\vfill
+
+% Can be used to pull up biographies so that the bottom of the last one
+% is flush with the other column.
+%\enlargethispage{-5in}
+
+
+
+% that's all folks
+\end{document}
+
+

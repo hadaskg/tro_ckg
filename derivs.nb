@@ -1,0 +1,1254 @@
+(************** Content-type: application/mathematica **************
+                     CreatedBy='Mathematica 5.1'
+
+                    Mathematica-Compatible Notebook
+
+This notebook can be used with any Mathematica-compatible
+application, such as Mathematica, MathReader or Publicon. The data
+for the notebook starts with the line containing stars above.
+
+To get the notebook into a Mathematica-compatible application, do
+one of the following:
+
+* Save the data starting with the line of stars above into a file
+  with a name ending in .nb, then open the file inside the
+  application;
+
+* Copy the data starting with the line of stars above to the
+  clipboard, then use the Paste menu command inside the application.
+
+Data for notebooks contains only printable 7-bit ASCII and can be
+sent directly in email or through ftp in text mode.  Newlines can be
+CR, LF or CRLF (Unix, Macintosh or MS-DOS style).
+
+NOTE: If you modify the data for this notebook not in a Mathematica-
+compatible application, you must delete the line below containing
+the word CacheID, otherwise Mathematica-compatible applications may
+try to use invalid cache data.
+
+For more information on notebooks and Mathematica-compatible 
+applications, contact Wolfram Research:
+  web: http://www.wolfram.com
+  email: info@wolfram.com
+  phone: +1-217-398-0700 (U.S.)
+
+Notebook reader applications are available free of charge from 
+Wolfram Research.
+*******************************************************************)
+
+(*CacheID: 232*)
+
+
+(*NotebookFileLineBreakTest
+NotebookFileLineBreakTest*)
+(*NotebookOptionsPosition[     28716,        955]*)
+(*NotebookOutlinePosition[     29362,        977]*)
+(*  CellTagsIndexPosition[     29318,        973]*)
+(*WindowFrame->Normal*)
+
+
+
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+    \(\(\(dv\  = \ {x - xc, y - yc}\)\(\[IndentingNewLine]\)
+    \)\)], "Input"],
+
+Cell[BoxData[
+    \({x - xc, y - yc}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(sdv\  = \ dv . dv\)], "Input"],
+
+Cell[BoxData[
+    \(\((x - xc)\)\^2 + \((y - yc)\)\^2\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(ndv\  = \ Sqrt[sdv]\)], "Input"],
+
+Cell[BoxData[
+    \(\@\(\((x - xc)\)\^2 + \((y - yc)\)\^2\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(A = ArcTan[\(-dv[\([2]\)]\), dv[\([1]\)]]\)], "Input"],
+
+Cell[BoxData[
+    \(ArcTan[\(-y\) + yc, x - xc]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(X = {A/Angle, Radius - ndv, T - A}\)], "Input"],
+
+Cell[BoxData[
+    \({ArcTan[\(-y\) + yc, x - xc]\/Angle, 
+      Radius - \@\(\((x - xc)\)\^2 + \((y - yc)\)\^2\), 
+      T - ArcTan[\(-y\) + yc, x - xc]}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(F = 
+      Transpose[{{Cos[A], Sin[A], 
+            0}, {\(-dv[\([1]\)]\)/ndv, \(-dv[\([2]\)]\)/ndv, 0}, {0, 0, 
+            1}}]\)], "Input"],
+
+Cell[BoxData[
+    \({{Cos[
+          ArcTan[\(-y\) + yc, 
+            x - xc]], \(\(-x\) + xc\)\/\@\(\((x - xc)\)\^2 + \((y - \
+yc)\)\^2\), 
+        0}, {Sin[
+          ArcTan[\(-y\) + yc, 
+            x - xc]], \(\(-y\) + yc\)\/\@\(\((x - xc)\)\^2 + \((y - \
+yc)\)\^2\), 0}, {0, 0, 1}}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(MatrixForm[F]\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {\(Cos[
+                ArcTan[\(-y\) + yc, 
+                  x - xc]]\), \(\(\(-x\) + 
+                    xc\)\/\@\(\((x - xc)\)\^2 + \((y - yc)\)\^2\)\), "0"},
+            {\(Sin[
+                ArcTan[\(-y\) + yc, 
+                  x - xc]]\), \(\(\(-y\) + 
+                    yc\)\/\@\(\((x - xc)\)\^2 + \((y - yc)\)\^2\)\), "0"},
+            {"0", "0", "1"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DxA\  = \ D[A, x]\)], "Input"],
+
+Cell[BoxData[
+    \(\(\(-y\) + yc\)\/\(\((x - xc)\)\^2 + \((\(-y\) + yc)\)\^2\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DyA = D[A, y]\)], "Input"],
+
+Cell[BoxData[
+    \(\(-\(\(\(-x\) + 
+            xc\)\/\(\((x - xc)\)\^2 + \((\(-y\) + yc)\)\^2\)\)\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DgX = 
+      Transpose[{D[X, x], \ D[X, y], D[X, T]}] // FullSimplify\)], "Input"],
+
+Cell[BoxData[
+    \({{\(\(-y\) + yc\)\/\(Angle\ \((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\), \
+\(x - xc\)\/\(Angle\ \((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\), 
+        0}, {\(\(-x\) + xc\)\/\@\(\((x - xc)\)\^2 + \((y - yc)\)\^2\), \(\(-y\
+\) + yc\)\/\@\(\((x - xc)\)\^2 + \((y - yc)\)\^2\), 
+        0}, {\(y - yc\)\/\(\((x - xc)\)\^2 + \((y - yc)\)\^2\), \(\(-x\) + xc\
+\)\/\(\((x - xc)\)\^2 + \((y - yc)\)\^2\), 1}}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(MatrixForm[DgX]\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {\(\(\(-y\) + 
+                    yc\)\/\(Angle\ \((\((x - xc)\)\^2 + \((\(-y\) + yc)\)\^2)\
+\)\)\), \(-\(\(\(-x\) + 
+                      xc\)\/\(Angle\ \((\((x - xc)\)\^2 + \((\(-y\) + \
+yc)\)\^2)\)\)\)\), "0"},
+            {\(-\(\(x - 
+                      xc\)\/\@\(\((x - xc)\)\^2 + \((y - yc)\)\^2\)\)\), \
+\(-\(\(y - yc\)\/\@\(\((x - xc)\)\^2 + \((y - yc)\)\^2\)\)\), "0"},
+            {\(-\(\(\(-y\) + 
+                      yc\)\/\(\((x - xc)\)\^2 + \((\(-y\) + yc)\)\^2\)\)\), \
+\(\(\(-x\) + xc\)\/\(\((x - xc)\)\^2 + \((\(-y\) + yc)\)\^2\)\), "1"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DxDgX\  = \ D[DgX, x] // FullSimplify; DxDgX // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {\(\(2\ \((x - xc)\)\ \((y - 
+                        yc)\)\)\/\(Angle\ \((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^2\)\), \(-\(\(\((x - xc + y - yc)\)\ \((x - xc - y + 
+                          yc)\)\)\/\(Angle\ \((\((x - xc)\)\^2 + \((y - yc)\)\
+\^2)\)\^2\)\)\), "0"},
+            {\(-\(\((y - yc)\)\^2\/\((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^\(3/2\)\)\), \(\(\((x - xc)\)\ \((y - 
+                        yc)\)\)\/\((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^\(3/2\)\), "0"},
+            {\(-\(\(2\ \((x - xc)\)\ \((y - 
+                          yc)\)\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^2\
+\)\), \(\(\((x - xc + y - yc)\)\ \((x - xc - y + 
+                        yc)\)\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^2\),
+               "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DyDgX\  = \ D[DgX, y] // FullSimplify; DyDgX // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    RowBox[{\(General::"spell1"\), \(\(:\)\(\ \)\), "\<\"Possible spelling \
+error: new symbol name \\\"\\!\\(DyDgX\\)\\\" is similar to existing symbol \
+\\\"\\!\\(DxDgX\\)\\\". \\!\\(\\*ButtonBox[\\\"More\[Ellipsis]\\\", \
+ButtonStyle->\\\"RefGuideLinkText\\\", ButtonFrame->None, \
+ButtonData:>\\\"General::spell1\\\"]\\)\"\>"}]], "Message"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {\(-\(\(\((x - xc + y - yc)\)\ \((x - xc - y + 
+                          yc)\)\)\/\(Angle\ \((\((x - xc)\)\^2 + \((y - yc)\)\
+\^2)\)\^2\)\)\), \(-\(\(2\ \((x - xc)\)\ \((y - 
+                          yc)\)\)\/\(Angle\ \((\((x - xc)\)\^2 + \((y - yc)\)\
+\^2)\)\^2\)\)\), "0"},
+            {\(\(\((x - xc)\)\ \((y - 
+                        yc)\)\)\/\((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^\(3/2\)\), \(-\(\((x - xc)\)\^2\/\((\((x - xc)\)\^2 + \((y - yc)\
+\)\^2)\)\^\(3/2\)\)\), "0"},
+            {\(\(\((x - xc + y - yc)\)\ \((x - xc - y + 
+                        yc)\)\)\/\((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^2\), \(\(2\ \((x - xc)\)\ \((y - 
+                        yc)\)\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^2\),
+               "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DtDgX\  = \ D[DgX, T] // FullSimplify; DtDgX // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    RowBox[{\(General::"spell"\), \(\(:\)\(\ \)\), "\<\"Possible spelling \
+error: new symbol name \\\"\\!\\(DtDgX\\)\\\" is similar to existing symbols \
+\\!\\({DxDgX, DyDgX}\\). \\!\\(\\*ButtonBox[\\\"More\[Ellipsis]\\\", \
+ButtonStyle->\\\"RefGuideLinkText\\\", ButtonFrame->None, \
+ButtonData:>\\\"General::spell\\\"]\\)\"\>"}]], "Message"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(subs\  = \ {x \[Rule] \(-0.7513\)\ , y \[Rule] 0.75, 
+        T \[Rule] \(-1.5731\), xc \[Rule] 0, yc \[Rule] 0.75, 
+        Angle \[Rule] \(-\[Pi]\)/2, Radius \[Rule] 0.75}\)], "Input"],
+
+Cell[BoxData[
+    \({x \[Rule] \(-0.7513`\), y \[Rule] 0.75`, T \[Rule] \(-1.5731`\), 
+      xc \[Rule] 0, yc \[Rule] 0.75`, Angle \[Rule] \(-\(\[Pi]\/2\)\), 
+      Radius \[Rule] 0.75`}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DgX /. subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"0.`", "0.8473576099661672`", "0"},
+            {"1.`", "0.`", "0"},
+            {"0.`", "1.331026221216558`", "1"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DxDgX /. subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"0.`", "1.1278551976123616`", "0"},
+            {"0.`", "0.`", "0"},
+            {"0.`", "1.7716308015660298`", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DyDgX /. subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"1.1278551976123616`", "0.`", "0"},
+            {"0.`", \(-1.3310262212165578`\), "0"},
+            {"1.7716308015660298`", "0.`", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DtDgX // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(X /. subs\)], "Input"],
+
+Cell[BoxData[
+    \({1.`, \(-0.0012999999999999678`\), \(-0.002303673205103385`\)}\)], \
+"Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(F /. subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"6.123031769111886`*^-17", "1.`", "0"},
+            {\(-1.`\), "0.`", "0"},
+            {"0", "0", "1"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(DxF = D[F, x]\ \[IndentingNewLine]\), "\[IndentingNewLine]", 
+    \(DxF /. subs // MatrixForm\)}], "Input"],
+
+Cell[BoxData[
+    \({{\(-\(\(\((\(-y\) + yc)\)\ Sin[
+                  ArcTan[\(-y\) + yc, 
+                    x - xc]]\)\/\(\((x - xc)\)\^2 + \((\(-y\) + \
+yc)\)\^2\)\)\), \(-\(\(\((x - xc)\)\ \((\(-x\) + 
+                      xc)\)\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^\(3/2\
+\)\)\) - 1\/\@\(\((x - xc)\)\^2 + \((y - yc)\)\^2\), 
+        0}, {\(\((\(-y\) + yc)\)\ Cos[ArcTan[\(-y\) + yc, x - xc]]\)\/\(\((x \
+- xc)\)\^2 + \((\(-y\) + yc)\)\^2\), \(-\(\(\((x - xc)\)\ \((\(-y\) + 
+                    yc)\)\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^\(3/2\)\
+\)\), 0}, {0, 0, 0}}\)], "Output"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"0.`", \(-2.220446049250313`*^-16\), "0"},
+            {"0.`", "0.`", "0"},
+            {"0", "0", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+    \(\(DyF = D[F, y];\)\), "\[IndentingNewLine]", 
+    \(DyF /. subs // MatrixForm\)}], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {\(-1.331026221216558`\), "0.`", "0"},
+            {\(-8.14991583802993`*^-17\), \(-1.331026221216558`\), "0"},
+            {"0", "0", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DtF = D[F, T]\)], "Input"],
+
+Cell[BoxData[
+    \({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DxF . F /. subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"2.220446049250313`*^-16", "0.`", "0"},
+            {"0.`", "0.`", "0"},
+            {"0", "0", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DyF . F\  /. subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {\(-8.14991583802993`*^-17\), \(-1.3310262212165578`\), "0"},
+            {"1.331026221216558`", \(-8.14991583802993`*^-17\), "0"},
+            {"0", "0", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df1X\  = \ 
+      DxDgX\ F[\([1, 1]\)]\  + \ DyDgX\ F[\([2, 1]\)]\  + \ 
+        DtDgX\ F[\([3, 1]\)]\)], "Input"],
+
+Cell[BoxData[
+    \({{\(2\ \((x - xc)\)\ \((y - yc)\)\ Cos[ArcTan[\(-y\) + yc, x - xc]]\)\/\
+\(Angle\ \((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^2\) - \((\((x - xc + y - 
+                    yc)\)\ \((x - xc - y + yc)\)\ Sin[
+                  ArcTan[\(-y\) + yc, 
+                    x - xc]])\)/\((Angle\ \((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^2)\), \(-\(\((\((x - xc + y - yc)\)\ \((x - xc - y + yc)\)\ Cos[
+                    ArcTan[\(-y\) + yc, 
+                      x - xc]])\)/\((Angle\ \((\((x - xc)\)\^2 + \((y - yc)\)\
+\^2)\)\^2)\)\)\) - \(2\ \((x - xc)\)\ \((y - yc)\)\ Sin[ArcTan[\(-y\) + yc, x \
+- xc]]\)\/\(Angle\ \((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^2\), 
+        0}, {\(-\(\(\((y - yc)\)\^2\ Cos[
+                    ArcTan[\(-y\) + yc, 
+                      x - xc]]\)\/\((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^\(3/2\)\)\) + \(\((x - xc)\)\ \((y - yc)\)\ Sin[ArcTan[\(-y\) + \
+yc, x - xc]]\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^\(3/2\), \(\((x - \
+xc)\)\ \((y - yc)\)\ Cos[ArcTan[\(-y\) + yc, x - xc]]\)\/\((\((x - xc)\)\^2 + \
+\((y - yc)\)\^2)\)\^\(3/2\) - \(\((x - xc)\)\^2\ Sin[ArcTan[\(-y\) + yc, x - \
+xc]]\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^\(3/2\), 
+        0}, {\(-\(\(2\ \((x - xc)\)\ \((y - yc)\)\ Cos[
+                    ArcTan[\(-y\) + yc, 
+                      x - xc]]\)\/\((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^2\)\) + \((\((x - xc + y - yc)\)\ \((x - xc - y + yc)\)\ Sin[
+                  ArcTan[\(-y\) + yc, 
+                    x - xc]])\)/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^2, \
+\((\((x - xc + y - yc)\)\ \((x - xc - y + yc)\)\ Cos[
+                  ArcTan[\(-y\) + yc, 
+                    x - xc]])\)/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^2 + \
+\(2\ \((x - xc)\)\ \((y - yc)\)\ Sin[ArcTan[\(-y\) + yc, x - xc]]\)\/\((\((x \
+- xc)\)\^2 + \((y - yc)\)\^2)\)\^2, 0}}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(\(\(Df1X /. subs // MatrixForm\)\(\[IndentingNewLine]\)
+    \)\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {\(-1.1278551976123616`\), "6.905893205938454`*^-17", "0"},
+            {"0.`", "1.3310262212165578`", "0"},
+            {\(-1.77163080156603`\), "1.0847751681125958`*^-16", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Z = \ A[g[s]]\)], "Input"],
+
+Cell[BoxData[
+    \(\(ArcTan[\(-y\) + yc, x - xc]\)[g[s]]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Z = Y[w[s]]\)], "Input"],
+
+Cell[BoxData[
+    \(Y[w[s]]\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DsZ = D[Z, s]\)], "Input"],
+
+Cell[BoxData[
+    RowBox[{
+      RowBox[{
+        SuperscriptBox["w", "\[Prime]",
+          MultilineFunction->None], "[", "s", "]"}], " ", 
+      RowBox[{
+        SuperscriptBox["Y", "\[Prime]",
+          MultilineFunction->None], "[", \(w[s]\), "]"}]}]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DssZ\  = \ D[DsZ, s]\)], "Input"],
+
+Cell[BoxData[
+    RowBox[{\(General::"spell1"\), \(\(:\)\(\ \)\), "\<\"Possible spelling \
+error: new symbol name \\\"\\!\\(DssZ\\)\\\" is similar to existing symbol \\\
+\"\\!\\(DsZ\\)\\\". \\!\\(\\*ButtonBox[\\\"More\[Ellipsis]\\\", ButtonStyle->\
+\\\"RefGuideLinkText\\\", ButtonFrame->None, \
+ButtonData:>\\\"General::spell1\\\"]\\)\"\>"}]], "Message"],
+
+Cell[BoxData[
+    RowBox[{
+      RowBox[{
+        RowBox[{
+          SuperscriptBox["Y", "\[Prime]",
+            MultilineFunction->None], "[", \(w[s]\), "]"}], " ", 
+        RowBox[{
+          SuperscriptBox["w", "\[Prime]\[Prime]",
+            MultilineFunction->None], "[", "s", "]"}]}], "+", 
+      RowBox[{
+        SuperscriptBox[
+          RowBox[{
+            SuperscriptBox["w", "\[Prime]",
+              MultilineFunction->None], "[", "s", "]"}], "2"], " ", 
+        RowBox[{
+          SuperscriptBox["Y", "\[Prime]\[Prime]",
+            MultilineFunction->None], "[", \(w[s]\), "]"}]}]}]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DgX . F /. subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {\(-0.8473576099661672`\), "0.`", "0"},
+            {"6.123031769111886`*^-17", "1.`", "0"},
+            {\(-1.331026221216558`\), "0.`", "1"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df1X1 = 
+      DgX[\([1, 1]\)]\ F[\([1, 1]\)]\  + \ DgX[\([1, 2]\)]\ F[\([2, 1]\)] + 
+          DgX[\([1, 3]\)]\ F[\([3, 1]\)] /. subs\)], "Input"],
+
+Cell[BoxData[
+    \(\(-0.8473576099661672`\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df1X2 = 
+      DgX[\([2, 1]\)]\ F[\([1, 1]\)]\  + \ DgX[\([2, 2]\)]\ F[\([2, 1]\)] + 
+          DgX[\([2, 3]\)]\ F[\([3, 1]\)] /. subs\)], "Input"],
+
+Cell[BoxData[
+    \(6.123031769111886`*^-17\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df1X3 = 
+      DgX[\([3, 1]\)]\ F[\([1, 1]\)]\  + \ DgX[\([3, 2]\)]\ F[\([2, 1]\)] + 
+          DgX[\([3, 3]\)]\ F[\([3, 1]\)] /. subs\)], "Input"],
+
+Cell[BoxData[
+    \(\(-1.331026221216558`\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df2X1 = 
+      DgX[\([1, 1]\)]\ F[\([1, 2]\)]\  + \ DgX[\([1, 2]\)]\ F[\([2, 2]\)] + 
+          DgX[\([1, 3]\)]\ F[\([3, 2]\)] /. subs\)], "Input"],
+
+Cell[BoxData[
+    \(0.`\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df2X2 = 
+      DgX[\([2, 1]\)]\ F[\([1, 2]\)]\  + \ DgX[\([2, 2]\)]\ F[\([2, 2]\)] + 
+          DgX[\([2, 3]\)]\ F[\([3, 2]\)] /. subs\)], "Input"],
+
+Cell[BoxData[
+    \(1.`\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df2X3 = 
+      DgX[\([3, 1]\)]\ F[\([1, 2]\)]\  + \ DgX[\([3, 2]\)]\ F[\([2, 2]\)] + 
+          DgX[\([3, 3]\)]\ F[\([3, 2]\)] /. subs\)], "Input"],
+
+Cell[BoxData[
+    \(0.`\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df3X3 = 
+      DgX[\([3, 1]\)]\ F[\([1, 3]\)]\  + \ DgX[\([3, 2]\)]\ F[\([2, 3]\)] + 
+          DgX[\([3, 3]\)]\ F[\([3, 3]\)] /. subs\)], "Input"],
+
+Cell[BoxData[
+    \(1\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df3X1 = 
+      DgX[\([1, 1]\)]\ F[\([1, 3]\)]\  + \ DgX[\([1, 2]\)]\ F[\([2, 3]\)] + 
+          DgX[\([1, 3]\)]\ F[\([3, 3]\)] /. subs\)], "Input"],
+
+Cell[BoxData[
+    \(0\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df3X2 = 
+      DgX[\([2, 1]\)]\ F[\([1, 3]\)]\  + \ DgX[\([2, 2]\)]\ F[\([2, 3]\)] + 
+          DgX[\([2, 3]\)]\ F[\([3, 3]\)] /. subs\)], "Input"],
+
+Cell[BoxData[
+    \(0\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DfX = {{Df1X1, Df2X1, Df3X1}, {Df1X2, Df2X2, Df3X2}, {Df1X3, Df2X3, 
+            Df3X3}} // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {\(-0.8473576099661672`\), "0.`", "0"},
+            {"6.123031769111886`*^-17", "1.`", "0"},
+            {\(-1.331026221216558`\), "0.`", "1"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df1f1X1 = 
+      DxDgX[\([1, 1]\)]\ F[\([1, 1]\)]^2\  + \ 
+          DyDgX[\([1, 2]\)]\ F[\([2, 1]\)]^2 + 
+          DtDgX[\([1, 3]\)]\ F[\([3, 1]\)]^2 + 
+          DgX[\([1, 1]\)]\ DxF[\([1, 1]\)]\  + \ 
+          DgX[\([1, 2]\)]\ F[\([2, 1]\)] + DgX[\([1, 3]\)]\ F[\([3, 1]\)] /. 
+        subs\)], "Input"],
+
+Cell[BoxData[
+    \(\(-0.8473576099661672`\)\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DfF\)], "Input"],
+
+Cell[BoxData[
+    \(DfF\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DxF\)], "Input"],
+
+Cell[BoxData[
+    \({{\(-\(\(\((\(-y\) + yc)\)\ Sin[
+                  ArcTan[\(-y\) + yc, 
+                    x - xc]]\)\/\(\((x - xc)\)\^2 + \((\(-y\) + \
+yc)\)\^2\)\)\), \(-\(\(\((x - xc)\)\ \((\(-x\) + 
+                      xc)\)\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^\(3/2\
+\)\)\) - 1\/\@\(\((x - xc)\)\^2 + \((y - yc)\)\^2\), 
+        0}, {\(\((\(-y\) + yc)\)\ Cos[ArcTan[\(-y\) + yc, x - xc]]\)\/\(\((x \
+- xc)\)\^2 + \((\(-y\) + yc)\)\^2\), \(-\(\(\((x - xc)\)\ \((\(-y\) + 
+                    yc)\)\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^\(3/2\)\
+\)\), 0}, {0, 0, 0}}\)], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DxF /. subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"0.`", \(-2.220446049250313`*^-16\), "0"},
+            {"0.`", "0.`", "0"},
+            {"0", "0", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df1F = \ 
+      DxF\ F[\([1, 1]\)]\  + \ DyF\ F[\([2, 1]\)] + DtF\ F[\([3, 1]\)] /. 
+          subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"1.331026221216558`", \(-1.3595861701158643`*^-32\), "0"},
+            {"8.14991583802993`*^-17", "1.331026221216558`", "0"},
+            {"0", "0", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df2F = \ 
+      DxF\ F[\([1, 2]\)]\  + \ DyF\ F[\([2, 2]\)] + DtF\ F[\([3, 2]\)] /. 
+          subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    RowBox[{\(General::"spell1"\), \(\(:\)\(\ \)\), "\<\"Possible spelling \
+error: new symbol name \\\"\\!\\(Df2F\\)\\\" is similar to existing symbol \\\
+\"\\!\\(DfF\\)\\\". \\!\\(\\*ButtonBox[\\\"More\[Ellipsis]\\\", ButtonStyle->\
+\\\"RefGuideLinkText\\\", ButtonFrame->None, \
+ButtonData:>\\\"General::spell1\\\"]\\)\"\>"}]], "Message"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"0", \(-2.220446049250313`*^-16\), "0"},
+            {"0", "0.`", "0"},
+            {"0", "0", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(Df3F = \ 
+      DxF\ F[\([1, 3]\)]\  + \ DyF\ F[\([2, 3]\)] + DtF\ F[\([3, 3]\)] /. 
+          subs // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    RowBox[{\(General::"spell1"\), \(\(:\)\(\ \)\), "\<\"Possible spelling \
+error: new symbol name \\\"\\!\\(Df3F\\)\\\" is similar to existing symbol \\\
+\"\\!\\(DfF\\)\\\". \\!\\(\\*ButtonBox[\\\"More\[Ellipsis]\\\", ButtonStyle->\
+\\\"RefGuideLinkText\\\", ButtonFrame->None, \
+ButtonData:>\\\"General::spell1\\\"]\\)\"\>"}]], "Message"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(DxDgX // MatrixForm\)], "Input"],
+
+Cell[BoxData[
+    TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+            {\(\(2\ \((x - xc)\)\ \((y - 
+                        yc)\)\)\/\(Angle\ \((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^2\)\), \(-\(\(\((x - xc + y - yc)\)\ \((x - xc - y + 
+                          yc)\)\)\/\(Angle\ \((\((x - xc)\)\^2 + \((y - yc)\)\
+\^2)\)\^2\)\)\), "0"},
+            {\(-\(\((y - yc)\)\^2\/\((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^\(3/2\)\)\), \(\(\((x - xc)\)\ \((y - 
+                        yc)\)\)\/\((\((x - xc)\)\^2 + \((y - \
+yc)\)\^2)\)\^\(3/2\)\), "0"},
+            {\(-\(\(2\ \((x - xc)\)\ \((y - 
+                          yc)\)\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^2\
+\)\), \(\(\((x - xc + y - yc)\)\ \((x - xc - y + 
+                        yc)\)\)\/\((\((x - xc)\)\^2 + \((y - yc)\)\^2)\)\^2\),
+               "0"}
+            },
+          RowSpacings->1,
+          ColumnSpacings->1,
+          ColumnAlignments->{Left}], "\[NoBreak]", ")"}],
+      Function[ BoxForm`e$, 
+        MatrixForm[ BoxForm`e$]]]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+    \(\(\(DgDxDgX[\([All, 1]\)\ ]\ F[\([1, 1]\)]\  + \ DyDgX[\([All, 1]\)] + 
+        F[\([2, 1]\)]\  + \ DtDgX[\([All, 1]\)]\ F[\([3, 1]\)] /. 
+      subs\)\(\[IndentingNewLine]\)
+    \)\)], "Input"],
+
+Cell[BoxData[
+    \({0.12785519761236164`, \(-1.`\), 0.7716308015660298`}\)], "Output"]
+}, Open  ]]
+},
+FrontEndVersion->"5.1 for Microsoft Windows",
+ScreenRectangle->{{0, 1024}, {0, 695}},
+WindowSize->{496, 537},
+WindowMargins->{{Automatic, 39}, {Automatic, -24}}
+]
+
+(*******************************************************************
+Cached data follows.  If you edit this Notebook file directly, not
+using Mathematica, you must remove the line containing CacheID at
+the top of  the file.  The cache data will then be recreated when
+you save this file from within Mathematica.
+*******************************************************************)
+
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+
+(*NotebookFileOutline
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[1776, 53, 94, 2, 50, "Input"],
+Cell[1873, 57, 50, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[1960, 63, 50, 1, 30, "Input"],
+Cell[2013, 66, 67, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[2117, 72, 52, 1, 30, "Input"],
+Cell[2172, 75, 73, 1, 35, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[2282, 81, 74, 1, 30, "Input"],
+Cell[2359, 84, 61, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[2457, 90, 67, 1, 30, "Input"],
+Cell[2527, 93, 167, 3, 74, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[2731, 101, 162, 4, 50, "Input"],
+Cell[2896, 107, 300, 8, 109, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[3233, 120, 46, 1, 30, "Input"],
+Cell[3282, 123, 651, 17, 99, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[3970, 145, 50, 1, 30, "Input"],
+Cell[4023, 148, 93, 1, 42, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[4153, 154, 46, 1, 30, "Input"],
+Cell[4202, 157, 115, 2, 42, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[4354, 164, 102, 2, 50, "Input"],
+Cell[4459, 168, 429, 6, 148, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[4925, 179, 48, 1, 30, "Input"],
+Cell[4976, 182, 845, 19, 107, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[5858, 206, 91, 1, 50, "Input"],
+Cell[5952, 209, 1037, 22, 115, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[7026, 236, 91, 1, 50, "Input"],
+Cell[7120, 239, 358, 5, 52, "Message"],
+Cell[7481, 246, 1037, 22, 115, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[8555, 273, 91, 1, 50, "Input"],
+Cell[8649, 276, 358, 5, 52, "Message"],
+Cell[9010, 283, 357, 11, 71, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[9404, 299, 206, 3, 50, "Input"],
+Cell[9613, 304, 200, 3, 65, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[9850, 312, 58, 1, 30, "Input"],
+Cell[9911, 315, 400, 11, 71, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[10348, 331, 60, 1, 30, "Input"],
+Cell[10411, 334, 401, 11, 71, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[10849, 350, 60, 1, 30, "Input"],
+Cell[10912, 353, 420, 11, 71, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[11369, 369, 52, 1, 30, "Input"],
+Cell[11424, 372, 357, 11, 71, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[11818, 388, 42, 1, 30, "Input"],
+Cell[11863, 391, 98, 2, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[11998, 398, 56, 1, 30, "Input"],
+Cell[12057, 401, 388, 11, 73, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[12482, 417, 128, 2, 70, "Input"],
+Cell[12613, 421, 604, 10, 158, "Output"],
+Cell[13220, 433, 388, 11, 73, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[13645, 449, 112, 2, 50, "Input"],
+Cell[13760, 453, 423, 11, 73, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[14220, 469, 46, 1, 30, "Input"],
+Cell[14269, 472, 67, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[14373, 478, 62, 1, 30, "Input"],
+Cell[14438, 481, 385, 11, 73, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[14860, 497, 64, 1, 30, "Input"],
+Cell[14927, 500, 443, 11, 77, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[15407, 516, 134, 3, 50, "Input"],
+Cell[15544, 521, 1857, 29, 494, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[17438, 555, 95, 2, 50, "Input"],
+Cell[17536, 559, 462, 11, 77, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[18035, 575, 46, 1, 30, "Input"],
+Cell[18084, 578, 71, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[18192, 584, 44, 1, 30, "Input"],
+Cell[18239, 587, 41, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[18317, 593, 46, 1, 30, "Input"],
+Cell[18366, 596, 266, 7, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[18669, 608, 53, 1, 30, "Input"],
+Cell[18725, 611, 355, 5, 52, "Message"],
+Cell[19083, 618, 609, 16, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[19729, 639, 62, 1, 30, "Input"],
+Cell[19794, 642, 426, 11, 73, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[20257, 658, 167, 3, 70, "Input"],
+Cell[20427, 663, 58, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[20522, 669, 167, 3, 70, "Input"],
+Cell[20692, 674, 57, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[20786, 680, 167, 3, 70, "Input"],
+Cell[20956, 685, 57, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[21050, 691, 167, 3, 70, "Input"],
+Cell[21220, 696, 37, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[21294, 702, 167, 3, 70, "Input"],
+Cell[21464, 707, 37, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[21538, 713, 167, 3, 70, "Input"],
+Cell[21708, 718, 37, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[21782, 724, 167, 3, 70, "Input"],
+Cell[21952, 729, 35, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[22024, 735, 167, 3, 70, "Input"],
+Cell[22194, 740, 35, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[22266, 746, 167, 3, 70, "Input"],
+Cell[22436, 751, 35, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[22508, 757, 135, 2, 50, "Input"],
+Cell[22646, 761, 426, 11, 73, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[23109, 777, 328, 7, 90, "Input"],
+Cell[23440, 786, 58, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[23535, 792, 36, 1, 30, "Input"],
+Cell[23574, 795, 37, 1, 29, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[23648, 801, 36, 1, 30, "Input"],
+Cell[23687, 804, 604, 10, 158, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[24328, 819, 58, 1, 30, "Input"],
+Cell[24389, 822, 388, 11, 73, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[24814, 838, 146, 3, 70, "Input"],
+Cell[24963, 843, 438, 11, 77, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[25438, 859, 146, 3, 70, "Input"],
+Cell[25587, 864, 355, 5, 52, "Message"],
+Cell[25945, 871, 384, 11, 73, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[26366, 887, 146, 3, 70, "Input"],
+Cell[26515, 892, 355, 5, 52, "Message"],
+Cell[26873, 899, 357, 11, 71, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[27267, 915, 52, 1, 30, "Input"],
+Cell[27322, 918, 1037, 22, 115, "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+Cell[28396, 945, 214, 4, 70, "Input"],
+Cell[28613, 951, 87, 1, 29, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+
+
+(*******************************************************************
+End of Mathematica Notebook file.
+*******************************************************************)
+

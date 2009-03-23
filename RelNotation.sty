@@ -1,0 +1,60 @@
+% RelNotation.sty
+% TeX macros for relational notation
+% Part of the RelSymb package, version 1.0.2
+
+\def\rel{\leftrightarrow}
+\def\RELcomp{\kern-.03ex\raise.4ex\hbox{\tiny\bf;}\kern0.05ex}
+\def\RELroundSymbols{
+\def\RELleq{\mathrel{\subseteq}}
+\def\RELlt{\mathrel{\subset}}
+\def\RELgeq{\mathrel{\supseteq}}
+\def\RELgt{\mathrel{\supset}}
+\def\RELjoin{\mathbin{\cup}}
+\def\RELmeet{\mathbin{\cap}}
+\def\RELjoinSet{\mathop{\bigcup}}
+\def\RELmeetSet{\mathop{\bigcap}}
+}
+\def\bigsqcap{\lower.5ex\hbox{\LARGE${\sqcap}$}}
+\def\bigsqcup{\lower.5ex\hbox{\LARGE${\sqcup}$}}
+\def\RELsquareSymbols{
+\def\RELleq{\mathrel{\sqsubseteq}}
+\def\RELlt{\mathrel{\sqsubset}}
+\def\RELgeq{\mathrel{\sqsupseteq}}
+\def\RELgt{\mathrel{\sqsupset}}
+\def\RELjoin{\mathbin{\sqcup}}
+\def\RELmeet{\mathbin{\sqcap}}
+\def\RELjoinSet{\mathop{\bigsqcup}}
+\def\RELmeetSet{\mathop{\bigsqcap}}
+}
+\RELroundSymbols
+\def\SETleq{\mathrel{\subseteq}}
+\def\SETlt{\mathrel{\subset}}
+\def\SETgeq{\mathrel{\supseteq}}
+\def\SETgt{\mathrel{\supset}}
+\def\SETjoin{\mathbin{\cup}}
+\def\SETmeet{\mathbin{\cap}}
+\def\SETjoinSet{\mathop{\bigcup}}
+\def\SETmeetSet{\mathop{\bigcap}}
+\def\RELcompl#1{\overline{#1}}
+\def\RELcomplOP{\overline{\phantom{Y}}}
+\def\RELconversesymb{\smallsmile}
+\def\RELconv#1{#1^{%
+     \mkern-1mu{}{\raise0.3ex\hbox{\tiny$\RELconversesymb$}}}%
+    \kern-0.1em{}}
+%%% WK comment: The closing group is a hack that allows
+%%%             other superscripts to appear BESIDES
+%%%             the one just generated ---
+%%%             apparently mathematicians like this.
+\def\RELrdiv{/}
+\def\RELldiv{\backslash}
+\def\RELimpl{\mathbin{\rightarrow}}
+\def\RELtransclos#1{{#1^{+}}}
+\def\RELrefltransclos#1{{#1^{*}}}
+\def\DEMcomp{\mathord{\raisebox{.2ex}{\hspace{.05em}\tiny $\Box$\hspace{.05em}}}}
+
+% The following symbols are overwritten by RelSymb.sty
+\def\RELid{\mathbb{I}}
+\def\RELtop{\top\kern-1.52ex\top}
+\def\RELbot{\bot\kern-1.52ex\bot}
+
+\endinput

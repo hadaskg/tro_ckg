@@ -1,0 +1,1327 @@
+
+This section  demonstrates the coupled planning and control approaches
+advocated in this thesis; experiments and simulations validate the
+approaches discussed in \resec{approach}.  The experiments are
+designed to demonstrate the automata-based planning approaches using
+the policies developed in`\cite{dcc_thesis}.  The approach is applied
+to real systems that exhibit the imperfections and model uncertainty
+of real world applications, operating in confined environments.  The
+results demonstrate that the combination of simple feedback control
+policies with automata synthesis techniques allows complex behaviors
+to emerge; unlike other behavior-based approaches~\cite{brooks_86},
+these emergent behaviors are guaranteed to induced the desire global
+behavior.  The experiments also exhibit the robustness of feedback
+control to model uncertainty and disturbances.  In spite of the
+overall success, several issues arise during the testing.  We discuss
+these issues, how they impact the relative strengths and weaknesses of
+the different approaches, and present our methods of addressing the
+issues.
+
+
+\subsection{`LAGR' Robot Experiments}
+\label{sec:lagr_total_order}
+
+The previous experiments did not have integrated localization, which limits their
+practical value.  Using pure dead reckoning makes the experiment too much like a
+simulation, as the hybrid control system is not subject to disturbances due to
+localization error and correction.  To address this shortcoming, a second set of
+order-based experiments uses a robot equipped with an integrated vision-based
+localization system.  This allows the hybrid control approach developed in this
+thesis to be evaluated in an integrated system.
+
+\begin{figure}[bt]
+  \centering 
+   \includegraphics[width=\linewidth]{graphics/Lagr_14Oct07_008.eps}
+
+   \caption[`LAGR' robot navigating a corridor.]{`LAGR' robot navigating a corridor.
+     Three color-coded landmarks, which are used by the vision based localization
+     system, are visible in the image.}
+   \label{fig:lagr_nook}
+\end{figure}
+
+In the next set of experiments, we use the `LAGR' robot shown in \refig{lagr_nook}
+because it has four pairs of stereo cameras to perform vision based localization relative
+to known landmarks placed in the environment; the landmarks are color coded as shown
+in \refig{lagr_nook}.  The localization system uses an extended Kalman filter to
+update the pose estimate based on measurements of range and bearing to the identified
+landmarks.  The system is now subject to disturbances based on jumps in the pose
+estimate as new landmarks come into view.
+
+
+%% \addtolength{\floatsep}{-2ex}
+%% \addtolength{\textfloatsep}{-2ex}
+%% \addtolength{\dblfloatsep}{-2ex}
+%% \addtolength{\dbltextfloatsep}{-2ex}
+\begin{figure}[bt]
+\begin{center}
+\vspace{0.25ex}
+\begin{minipage}[b]{0.98\linewidth}
+\centering
+\begin{minipage}[b]{\linewidth}
+\begin{minipage}[c]{0.45\linewidth} % A minipage that covers half the page
+  \centering
+  \includegraphics[width=0.4\linewidth]{graphics/policy_curve.eps} 
+\end{minipage}
+\hspace{0.05\linewidth} % To get a little bit of space between the figures
+\begin{minipage}[c]{0.45\linewidth}
+  \centering 
+  \includegraphics[width=0.7\linewidth]{graphics/policy_tube.eps}
+\end{minipage}
+\end{minipage}
+
+\vspace{0.5ex}
+
+\begin{minipage}[b]{\linewidth}
+\begin{minipage}[t]{0.48\linewidth} % A minipage that covers half the page
+\centering
+
+   {\footnotesize a) Workspace path with local frame defined }
+
+\end{minipage}
+\hspace{0.02\linewidth} % To get a little bit of space between the figures
+\begin{minipage}[t]{0.48\linewidth}
+  \centering   
+
+  {\footnotesize b) Cell boundary and ``sliding'' control surface.}  
+
+\end{minipage}
+
+\end{minipage}
+\end{minipage}
+\caption[Path following style policy]{Control policy based on path following control
+  law given in \cite{vsc_path_following}.}
+\label{fig:nonholo_PF_policy}
+\end{center}
+\end{figure}
+%% \addtolength{\floatsep}{2ex}
+%% \addtolength{\textfloatsep}{2ex}
+%% \addtolength{\dblfloatsep}{2ex}
+%% \addtolength{\dbltextfloatsep}{2ex}
+
+These experiments are carried out with `\PF' style control
+policies~\cite{dcc_thesis,conner_09}.  The policy design is based on a
+variable structure control approach to path following, which gives the
+policy its `PF' name~\cite{vsc_path_following}.  The `PF' policies are
+based on workspace path segments, which are used to define a
+parameterized cell in pose space.  The path segment is lifted to a
+curve in pose space by considering the orientation of the path tangent
+as the desired system orientation, with the goal set center at one end
+of the pose space curve.  A `tube' is defined around the pose space
+curve to define the cell boundary.  \refig{nonholo_PF_policy} shows an
+example of this cell.  The PF policy defines a ``sliding'' control
+surface within the cell boundary tube.
+
+For a given robot model, the policy defines a control strategy that
+causes the system to steer toward the sliding surface, then along the
+sliding surface towards the pose space curve and the goal set center.
+For kinematic systems, the sliding surface defines a velocity
+constraint at each pose; the constraint is then mapped to a constraint
+on the input space, where a simple optimization is used to chose a
+valid input.  See~\cite{dcc_thesis} or~\cite{conner_09} for details.
+
+
+In addition to the goal set center, the policy free parameters include
+the width of the tube, the curvature of the workspace path, arc length
+of the path segment, and shape of the sliding surface.  Valid values
+of the free parameters, that is values that induce composable
+behavior, are limited by the input constraints and specific robot
+system model.  Thus, the composability requirements must be verified
+for a given set of parameter values
+
+
+For valid parameters, the induced dynamics cause
+the system to converge to the pose space curve while remaining in the
+cell until the system passes the designated end point and flows out of
+the cell via the goal set in finite time.
+The \PF policies are natural for specifying motion in corridors and around tight corners. 
+
+{\large get rid of the ``instead of'' contrast, and give very brief introduction to policy definition.}
+
+Instead of the manual instantiation approach taken with the previous experiments,
+these \PF policies are instantiated using the cache and reference point approach
+discussed in \resec{nonholo}.  A total of 313 policies are systematically defined in
+the cache; 156 forward, 156 reverse, and one special `Halt'.  These policies include
+various widths, lengths, and arc radii.  Each policy in the cache is associated with
+a one of thirteen bounded input sets; the inputs for each policy are taken from its
+associated input set.  See \reapp{robots} for specific details about the input sets.
+The input sets include sets for straight PF policies and arc based PF policies.  Both
+forward and reverse sets are associated with each group, as are aggressive and
+cautious sets.  The sets for straight policies allow less aggressive steering, while
+those for tight turns use a cautious forward speed and more aggressive steering.  By
+matching the input set to a particular policy, the feedback is tuned to the local
+conditions.  Even though the robot is capable of zero-radius turns, the input sets
+are constrained to exclude zero-radius turns; this approximates the behavior of more
+constrained systems such as cars, and provides a greater challenge to the hybrid
+control approach.
+
+%The policies are grouped so that only the longest policy is
+%instantiated at a given reference point.  Longer policies dominate the
+%shorter policies; that is they completely contain the domain of
+%shorter policies.
+
+\begin{figure}[bt]
+  \centering 
+   \includegraphics[width=0.55\linewidth]{graphics/lagr_meta_detail.eps}
+
+   \caption[`LAGR' meta-policies.]{An example meta-policy that uses five \PF
+     style policies to move three lanes coming from the right into a
+     single lane exiting to the left.  The policies are shown
+     projected into workspace.  To enhance the detail, the figures
+     axes are not equal.}
+   \label{fig:lagr_meta_detail}
+\end{figure}
+
+In the demonstrations here, the robot maneuvers about a hallway with
+long thin corridors; therefore, it makes sense to instantiate the
+policies in ``lanes.''  That is, the policies are instantiated in
+straight lines running the length of the hallways; the lines of
+policies are analogous to lanes on a highway.  
+
+To further simplify policy instantiation and planning, some local policies are
+grouped into meta-policies.  \refig{lagr_meta_detail} shows a meta-policy associated
+with taking the system from one of three lanes entering from the right and moving the
+system to the top most lane exiting to the left.  The meta-policy defines an
+order-based switching strategy between its component policies, which are defined with
+respect to a common reference point.  %Some cache policies are
+%specifically defined such that they connect together to induce a lane
+%change maneuver, as shown in \refig{lagr_meta_detail}, between evenly
+%spaced lanes.
+A meta-policy is instantiated by instantiating its component policies relative to its
+reference point; the meta-policy can only be instantiated if all of its component
+policies are collision free relative to a specified reference point in the free pose
+space.  \refig{lagr_meta} shows the component policies to scale, along with the
+expanded cells defined by the robot body size and shape.
+
+\begin{figure}[bt]
+ \begin{center}
+ \begin{minipage}[b]{\linewidth}
+ \begin{minipage}[b]{0.45\linewidth}
+  \centering 
+  \includegraphics[width=\linewidth]{graphics/lagr_meta.eps}
+
+  {\scriptsize a) Meta-policy projected into workspace}
+
+ \end{minipage}
+ \hspace{0.03\linewidth} % To get a little bit of space between the figures
+ \begin{minipage}[b]{0.45\linewidth}
+   \centering 
+   \includegraphics[width=\linewidth]{graphics/lagr_meta_padded.eps}
+
+   {\scriptsize b) Expanded meta-policy showing body extent in
+     workspace}
+
+ \end{minipage}
+ \end{minipage}
+ 
+ \caption[Example meta-policy for `LAGR' experiments]{Example meta-policy used for
+   LAGR experiments.  The meta-policy domains are shown relative to obstacles in the
+   environment in the proper scale.  The figure on the right shows the body extent
+   into the workspace for this meta policy.  Three robots are shown at various poses
+   on the cell boundaries; the robots use a bounding polygon for calculating the body
+   extent. }
+  \label{fig:lagr_meta}
+\end{center}
+\end{figure}
+
+While the component policies could be instantiated individually to accomplish the
+same task, meta-policies simplify the deployment by grouping similar behaviors.  For
+planning purposes, the meta-policy is treated as a single node in the prepares graph.
+Furthermore, the meta-policies can allow manual verification of the prepares
+relationships.  This can allow policies that cover the goal set, but do not all
+contain the goal set center, to be prepared as a group; this removes the restrictions
+of \resec{prepares_graph} for automated verification.  By design, the meta-policies
+only allow designated component policies to be prepared.  This affords the designer
+more control over the meta-policy behavior by allowing normally unused component
+policies to be added for robustness, without including them in the prepares graph
+used for planning.  These component policies can only be active after the meta-policy
+becomes active.
+
+
+Several meta-policies are defined based on needed motion in the
+hallways.  In addition to the ``lane change right'' meta-policy,
+meta-policies for ``lane change middle'' and ``lane change left'' are
+defined.  Given the narrowness of the hallways, only three lanes
+spaced 0.1 meters apart are defined in most corridors.  The lanes are
+defined in the forward direction along the length of the corridor.
+Several meta-policies associated with turning corners are defined,
+including both ``left turn'' and ``right turn''.  Many of the hallways
+were so narrow that a simple arc could not navigate the hallways;
+therefore, two different meta-policies induce K-turn motions in the
+narrow hallways.  Two additional meta-policies are defined to navigate
+a small ``nook'' in the center of the region.
+% \refig{lagr_nook} shows the robot navigating this nook.  When the robot is in the
+% nook, it is halted by a special policy that is prepared by the incoming meta-policy;
+% the halt policy prepares a meta-policy that exits the nook.
+
+
+% \refig{lagr_k_turn} shows actual data from a K-turn executed by the robot
+% during an experiment.  In this case, the behavior is encoded in the meta-policy by
+% design, where the behavior emerged as a consequence of discrete planning in the
+% Deminer experiments.
+
+% \begin{figure}[bt]
+%   \centering 
+%    \includegraphics[width=0.55\linewidth]{graphics/lagr_meta_turn.eps}
+
+%    \caption[`LAGR' left turn meta-policy]{Meta-policy used to turn 3 lanes left.}
+%    \label{fig:lagr_meta_left}
+% \end{figure}
+
+% \refig{lagr_meta_left} shows an example left turn.  The turn
+% meta-policies include simple arcs of various radii to blend three
+% lanes into one orthogonal lane.  To improve robustness, the turning
+% policies include both short radius turns and longer radius turns.  The
+% long radius arcs blend with the short radius turns to provide a
+% transition from straight motion to turning motions.
+
+%%\FloatBarrier
+
+
+
+% \begin{figure}[bt]
+%   \centering 
+% \begin{minipage}[b]{\linewidth}
+% \begin{minipage}[b]{0.30\linewidth}
+%   \centering 
+%    \includegraphics[width=\linewidth]{graphics/total_order_K_turn_F1.eps}
+
+%  {\scriptsize a) Approaching K-turn}
+
+% \end{minipage}
+% \hspace{0.03\linewidth} % To get a little bit of space between the figures
+% \begin{minipage}[b]{0.30\linewidth}
+%   \centering 
+
+%   \includegraphics[width=\linewidth]{graphics/total_order_K_turn_R1.eps}
+
+%  {\scriptsize b) Executing reverse motion } 
+
+% \end{minipage}
+% \hspace{0.03\linewidth} % To get a little bit of space between the figures
+% \begin{minipage}[b]{0.30\linewidth}
+%   \centering 
+
+%   \includegraphics[width=\linewidth]{graphics/total_order_K_turn_F2.eps}
+
+%  {\scriptsize b) Departing K-turn } 
+
+% \end{minipage}
+% \end{minipage}
+
+% \caption[`LAGR' robot executing K-turn]{Plot of data from actual
+%   robot experiment as the robot executes a K-turn in the upper
+%   hallway.  The K-turn is automatically induced by the composition of
+%   policies based on simple arcs and straight path segments. }
+%    \label{fig:lagr_k_turn}
+% \end{figure}
+
+
+The meta-policies are implemented in a modular fashion that makes the planning and
+execution transparent to the robot executive.  When testing for inclusion before
+becoming active, the meta-policy only tests those component policies designated as
+inlets for the prepares definition.  Once the meta-policy becomes active, all
+component policies are tested using the internal ordering; that is, the inclusion
+test resorts to a total order search over component policies if necessary once the
+current node is associated with the meta-policy.  This approach provides robustness
+to the meta-policy, while given the designer control over when the meta-policy is
+allowed to become active initially.
+
+The lane change meta-policies are instantiated at regular intervals along evenly
+spaced lanes in the corridors.  The component policies in the lane-change
+meta-policies are associated with input sets that have positive forward velocity.
+Turn and K-turn meta-policies are instantiated in a way that they are prepared and
+prepare the basic lane policies at the appropriate junctions.  In addition to the
+meta-policies, a few 180 degree arcs are used in the larger central hallway to allow
+continuous turns.  By design, according to the instantiated policies, the robot is
+only allowed to reverse motion in certain spots through the use of a K-turn maneuver
+or 180 degree arc in the central corridor.  Otherwise, the robot must travel in a
+loop.
+
+
+The use of meta-policies reduces the total number of nodes in the
+prepares graph that is used for planning.  In this case, a total of
+309 meta-policies and 86 individual policies are deployed in the
+environment.  Thus, the prepares graph used for planning has only 395
+nodes, compared to the grand total of 2846 \PF policies that are
+instantiated in the environment.  The grand total includes both
+individual and meta-policy components.  The policy suite includes 3155
+policies, the 2846 \PF policies and 309 meta-policies.
+
+The robot software executive functions the same as with the Deminer
+experiments.  The planning takes place over the 395 nodes in the
+prepares graph.  During execution, when a meta-policy becomes active,
+it is treated as a switched hybrid control policy in its own right;
+the component policies are activated according to the meta-policies
+local ordering.  On the executive level, the meta-policy remains
+active until the state enters the domain of a child node of the
+ordering, or exits the domain of all policies in the meta-policy's
+collection of component policies.
+
+% In spite of the limitations of the LAGR robot, the order-based hybrid control policy
+% robustly addressed the coupled navigation and control problem in most cases.  For single navigation
+% tasks, the order-based approach to generating a hybrid control policy %based on the
+% %composition of local control policies 
+% proves reliable.
+
+% \begin{comment}
+
+
+% \subsection{Automata-based Planning}
+% \label{sec:planning_automata}
+
+% %Automata are more flexible than sequence-based approaches because they
+% %allow the hybrid control system to react to changes in the environment
+% %encountered during run time.  
+% Like sequence-based approaches, automata-based switching strategies are capable of
+% addressing multiple tasks; however, automata have the added advantage of changing
+% behaviors during runtime based on gathered information without requiring re-planning.
+% Combining the policy composition approach advocated in this thesis with automaton
+% synthesis tools such as those of~\cite{hadas_07} enables a constructive approach to
+% building a hybrid control policy whose continuous execution satisfies high level
+% specifications, while enabling the constrained system to react to environmental
+% changes.
+
+% This section presents several experiments and simulations using the synthesis
+% approach given in~\cite{hadas_07}.  As discussed in \resec{fully}, \cite{hadas_07}
+% uses a disjoint workspace decomposition and adjacency graph to choose policies based
+% on our fully actuated policies for idealized systems.  In contrast, this section
+% defines the specifications and automata synthesis in terms of the prepares graph.
+% This approach is more flexible because it can be applied to constrained systems, and
+% allows for overlapping policy domains.
+
+% The section presents two examples.  The first uses the LAGR robot and policies from
+% \resec{lagr_total_order}; both simulations and experiments are discussed.  The second
+% demonstration uses \PF policies with an Ackermann steered vehicle to demonstrate
+% complex traffic behaviors in simulation.  The latter presentation includes a
+% discussion of using this approach as the basis for a decentralized multi-agent
+% control system.
+
+% \subsection{`LAGR' Robot Experiments}
+% \label{sec:lagr_automaton}
+
+% The first example is termed the ``timid night watchman.''  The LAGR robot is tasked
+% with patrolling office corridors by visiting four checkpoints in turn.  If an
+% intruder is detected, as indicated by a binary sensor called `Intruder', the robot is
+% to ``run and hide'' in the small nook near the workspace center; after the intruder
+% is gone, the robot should resume patrolling.  The system also includes a `Hazard'
+% input; upon sensing a hazard, the robot should stop in place.  The robot resumes
+% motion when the hazard is clear.  The robot has three outputs: `Stop', which
+% indicates that the robot should cease executing its local policy and stop in place,
+% `CheckPoint', which means the robot is at a designated checkpoint, and $\CP_i$, which
+% encodes which policy is associated with the automaton node.
+% %$\CP_i$ is a binary proposition that is true when the current state is in the domain of policy $i$.
+
+% The desired behavior is encoded in linear temporal logic (LTL) and input to the
+% automaton synthesis algorithm developed by~\cite{hadas_07}.  
+% % One LTL formula encodes assumptions about the initial
+% %conditions and transitions of the inputs, and thus about the behavior of the
+% %environment.  Another LTL formula encodes the initial conditions and transitions of
+% %the system; that is, which policy domains may contain the initial robot state, and
+% %the value of the other discrete outputs, and the allowed transitions between the
+% %outputs.  The allowable policy transitions encoded in the prepares graph are
+% %converted to LTL statements, and included in the allowable system transitions.  The
+% %final LTL formula encodes the goals for the environment and the system; that is what
+%statements must always hold true.
+% The algorithm takes the initial conditions, transition relations, and goals, then
+% checks whether the specification is realizable.  A specification is \emph{realizable}
+% if an automaton that specifies valid transitions can be synthesized given the LTL
+% inputs.  If the specification is realizable, the algorithm extracts a possible, but
+% not necessarily unique, automaton that implements a strategy that the system should
+% follow in order to satisfy the desired behavior.  
+% % The automaton synthesis is viewed as a game played between the environment, which
+% % controls the inputs, and the robot which controls the outputs.  The initial
+% % conditions are specified for the two players. The way the game is played is that at
+% % each step, first the environment makes a transition according to its transition
+% % relation, and then the system makes its own transition.  If the environment can
+% % falsify the goal statement regardless of the system transition, we say that the
+% % environment is winning and the desired behavior is unrealizable; this means that
+% % there is no automaton that can satisfy the requirements.  However, if the system
+% % can satisfy the goal specification encoded in LTL, no matter what the environment
+% % does, we say that the system is winning and we can extract an automaton.
+
+% % Note that there are two ``ways'' for the system to win. It wins if either system
+% % goals are satisfied, \textbf{or} if the environmental goals are falsified, either
+% % through a faulty environment or the system interfered.  If the environmental goals
+% % are falsified, then a correct behavior of the system is no longer guaranteed.
+% % Furthermore, if during an execution of the automaton the environment violates its own
+% % transition relation encoded by $\varphi_t^s$, the automaton is no longer valid.  The
+% % implication of this is discussed below.
+
+% Using the specific ``timid night watchman'' task, the behaviors are encoded as
+% follows.  The Hazard input is initially $\FALSE$, and there are no other assumptions
+% about the environment so both its transitions and goals are set to $\TRUE$.  The
+% Intruder input is allowed to be either \TRUE\ or \FALSE.  The system state is assumed
+% to be in one of two initial policy domains, the initial policies are not checkpoints,
+% and the system is not stopped by hazard.  The system transitions include knowledge of
+% the prepares graph.  The system stops if and only if there is a hazard sensed.  The
+% system also encodes that the current policy reference does not change if the system
+% stops. If an intruder is sensed, and the system is hidden in the nook, the system
+% should stay in the nook.  The system should always patrol if the intruder is not
+% sensed.  The CheckPoint output is set if and only if the robot is at a designated
+% checkpoint policy.  The desired behavior, given as the system goal, is that the
+% system either stops or eventually visits each checkpoint in order infinitely often.
+ 
+% \begin{figure}[bt]
+%   \centering 
+%    \includegraphics[width=\linewidth]{graphics/AutRnd5_Sim8_path.eps}
+
+%    \caption[`LAGR' timid night watchman.]{A simulation of path induced by an
+%      automaton that encodes the behavior patrol the corridors by visiting four
+%      specific policy domains is shown.  Upon sensing a `Intruder', the ``timid night
+%      watchman'' goes and hides in the corner until the intruder leaves.  Three robots
+%      are shown: the initial pose to the right, the final pose when execution is
+%      terminated near the middle, and the pose at which the intruder is detected in
+%      the lower right.  }
+%    \label{fig:lagr_automaton_full_path}
+% \end{figure}
+
+% Together, the automaton and policy suite serve as a hybrid control policy.  For these
+% specifications, the extracted automaton has 2400 nodes.  Executing the local control
+% policies as specified by the automaton induces a continuous system evolution that
+% satisfies the high level specification.  At the start of execution, we search the
+% entire automaton as a list of nodes until a node is found that has the correct input
+% state (Hazard = \FALSE ) and whose associated policy contains the initial pose.  This
+% approach, which allows starting from some arbitrary initial pose, works for this
+% particular scenario because of the cyclic behavior of the scenario; other scenarios
+% might require that the robot start in the domain of a policy in an explicit set of
+% initial policies.  A simulation run is shown in \refig{lagr_automaton_full_path}.
+% The intruder detector is triggered at an arbitrarily specified time.
+
+% The automaton governs the selection of local control policies.  The automaton
+% transitions between nodes as the system pose enters the domain of a policy associated
+% with a child node of the current automaton node.  In other words, from node $p_i$, at
+% each time step\footnote{The policies are designed as continuous control laws;
+%   however, the implementation on a computer induces a discrete time step.  We assume
+%   the time step is short compared to the time constant of the closed-loop dynamics.},
+% the values of the binary sensor inputs are evaluated. Based on these inputs, all
+% valid successor nodes are determined. If the vehicle is in the domain of policy
+% $\Phi_{l}$, which is associated with a valid automaton successor node $p_j$, the
+% transition is made.  Otherwise, if the vehicle is still in the domain of $\Phi_{k}$,
+% which is the active policy associated with node $p_i$, the execution remains in node
+% $p_i$.  If a node has more than one child node that represents a valid transition,
+% the choice can be made arbitrarily.  For these experiments, the first valid
+% transition as defined by the synthesis algorithm is chosen.  This execution based on
+% continuous motion is equivalent to the discrete execution of the automaton
+% \cite{fainekos_05a,belta_06}.
+
+
+% \begin{figure}[bt]
+%   \centering 
+%   \psfrag{2500}{2500}
+%   \psfrag{2000}{2000}
+%   \psfrag{1500}{1500}
+%   \psfrag{1000}{1000}
+%   \psfrag{500}{500}
+%   \psfrag{Time (s)}{Time (s)}
+%   \psfrag{Node ID}{Node ID}
+%   \psfrag{Automaton Nodes}{}
+
+%     \includegraphics[width=0.7\linewidth]{graphics/AutRnd5_Sim8_nodes.eps}
+
+%     \caption[`LAGR' timid night watch automaton node switching.]{As the system
+%       executes, the automaton changes nodes based on the discrete inputs and
+%       inclusion of the current pose in a given policy domain.  The graph shows three
+%       distinct phases.  The thirteen points marked with '*' indicated the check
+%       points passed.  The thickest portion, which is actually closely spaced
+%       `$\circ$' symbols, shows the portion where the intruder is detected.  Notice
+%       that the system makes multiple passes past each checkpoint before the intruder
+%       is detected.}
+%    \label{fig:lagr_automaton_full_nodes}
+% \end{figure}
+
+
+% \refig{lagr_automaton_full_nodes} shows the progression of the system through the
+% automaton nodes as the system moves through the environment.  Note the cyclic nature
+% as the system completes three patrols before the intruder is detected.  As the
+% automaton state transitions, so does the associated policy as shown in
+% \refig{lagr_automaton_full_policies}.
+
+% \begin{figure}[bt]
+%   \centering 
+%   \psfrag{3500}{3500}
+%   \psfrag{3000}{3000}
+%   \psfrag{2500}{2500}
+%   \psfrag{2000}{2000}
+%   \psfrag{1500}{1500}
+%   \psfrag{1000}{1000}
+%   \psfrag{500}{500}
+%   \psfrag{Time (s)}{Time (s)}
+%   \psfrag{Policy ID}{Policy ID}
+%   \psfrag{Policy}{}
+%    \includegraphics[width=0.7\linewidth]{graphics/AutRnd5_Sim8_policies.eps}
+
+%    \caption[`LAGR' timid night watch policy switching.]{Each node in
+%      the automaton is associated with a particular policy in the
+%      suite.  As the system executes, the local policies are activated
+%      by the automaton based on the local pose estimate.The graph shows
+%      the same three distinct phases as
+%      \refig{lagr_automaton_full_nodes}.}
+%    \label{fig:lagr_automaton_full_policies}
+% \end{figure}
+
+% In this execution strategy, the continuous evolution of the system governs the
+% discrete transitions in the automaton; therefore, the resultant transitions are
+% asynchronous, and not governed by a fixed time step.  In this current implementation,
+% the discrete inputs act as guards on the automaton transitions; the discrete input
+% must match the value associated with the child node to allow transition into the
+% child node, but does not force transition out of the current node.  Another approach
+% could check the discrete input at each update step and force transitions out of a
+% given automaton node if the inputs do not match the reference input.  This would
+% require that each node has a child with the same policy reference, but different
+% discrete inputs .
+
+% %%\FloatBarrier
+
+% \begin{figure}[bt]
+%   \centering 
+%    \includegraphics[width=\linewidth]{graphics/AutRnd5_Sim7_path.eps}
+
+%    \caption[`LAGR' timid night watch re-planning.]{As new information
+%      becomes available, such the obstacle in the lower corridor, the
+%      automaton synthesis formulates a different automaton based on
+%      changes to the prepares graph.  The new automaton preserves the
+%      correct behavior.}
+%    \label{fig:lagr_automaton_blocked}
+% \end{figure}
+
+
+% If the prepares graph changes, the automaton synthesis algorithm must be re-run.
+% \refig{lagr_automaton_blocked} shows the simulated path taken when an automaton is
+% synthesized for the prepares graph with 24 policies associated with the lower
+% corridor invalidated.  The resultant automaton contains 2580 nodes; its execution
+% correctly satisfies the original specification by only invoking valid policies.
+
+% %\FloatBarrier
+
+% The automaton synthesis approach guarantees the correct behavior under very
+% reasonable assumptions.  First, the automata synthesis only returns an automaton if
+% the specification is realizable for the given policy suite and associated prepares
+% graph. Second, given a realizable specification, the algorithm is guaranteed to
+% produce an automaton such that all its executions satisfy the desired behavior {\bf
+%   if} the environment behaves as assumed.  The construction of the automaton is done
+% using LTL statements that encode admissible environment behaviors; if the environment
+% violates these assumptions, the automaton is no longer correct.  Since the
+% specifications encode the transitions allowed by the prepares relationship, the only
+% case in which the system pose is not in the domain of $\Phi_{k}$, or in any successor
+% $\Phi_{l}$, is if the environment behaved ``badly.''  That is, either some
+% disturbance caused the policies to violate the prepares relationship, or the
+% environment violated assumptions governing the allowable discrete inputs.  This later
+% case requires careful sensor design, with only those restrictions that are
+% necessary.  Either case invalidates the automaton.  In the event that a valid
+% transition does not exist, the automaton executive raises an error flag, and halts
+% the system.  A new plan must be requested.
+
+% Unfortunately, for real systems disturbances are a fact of life.  Policies may be
+% designed to be as robust as possible, but disturbances may still take the system out
+% of the domain of a currently executing policy.  Often these disturbances are simply
+% due to pose estimation updates as described above.  The hybrid control system should
+% have a method of recovery, which will likely require some knowledge of the hybrid
+% control system and task.  For the task described in this section, our approach is to
+% search the automaton as a list of nodes until a node whose associated policy contains
+% the current pose estimate and whose discrete input matches the current sensor value;
+% as is done for the initial condition. This works in this example because of the
+% cyclic nature of the task.  
+
+% A more fundamental problem occurs when the disturbance takes the system outside the
+% domain of all policies in the automaton.  Depending on the initial specification, the
+% automaton synthesis does not necessarily use every available policy.  As with
+% sequence-based approaches, this has a negative impact on the overall robustness of
+% the policy composition technique relative to the collection of available policies.
+% This thesis considers two approaches to addressing the problem of unused policies.
+
+% The first approach explicitly allows the initial condition to be in any available
+% policy and have any allowable sensor value.  The assumption during synthesis that the
+% system is in one of two initial policy domains is made to limit the size of the
+% automaton.  No assumptions about the initial policies could be made; this would force
+% the automaton synthesis to include all policies, but would greatly increase the size
+% of the automaton.  The particular implementation of the synthesis algorithm used in
+% this thesis precluded this approach; this is not a theoretical issue, later work will
+% build a more robust synthesis tool to address this implementation
+% issue~\cite{hadas_pc}.
+
+% The second approach, which is used in these experiments, is to augment the
+% synthesized automaton to add nodes for each unused policy/sensor combination.  If a
+% policy is unused by the original automaton, but prepares another policy that is used
+% for all input combinations, then a node is added to the automaton with the unused
+% policy as a reference.  This added node ignores the sensor inputs.  The children of
+% the added node are all nodes in the automaton whose associated policies are prepared
+% by the added node's policy or have the same policy reference.  Since all input
+% combinations are covered, a valid child transition will eventually exist.  This
+% process is repeated until all policies that prepare others are added to the
+% deployment.  This approach maximizes the overall hybrid control policy domain for the
+% given collection of domains, while adding the smallest number of nodes to the
+% automaton.  This gives the system a way to ``get back on track.''  If the disturbance
+% causes the system pose to exit the domains of every policy in the suite, then the
+% hybrid control policy will stop the robot and cease execution.  Only by adding
+% additional policies, and regenerating the automaton can the system recover.
+
+
+% \begin{figure}[bt]
+%   \centering 
+%    \includegraphics[width=\linewidth]{graphics/AutRnd5_Run4_path.eps}
+
+%    \caption[`LAGR' timid night watch experiments.]{Actual run on
+%      LAGR robot.  Here, the robot resumes patrolling after hiding
+%      early in the experiment.}
+%    \label{fig:lagr_automaton_experiments}
+% \end{figure}
+
+% \refig{lagr_automaton_experiments} shows an example run using the augmented
+% automaton.  During the experimental runs, the `Intruder' is signaled at will via a
+% remote switch.  The experiment successfully satisfies the specification.
+% \refig{lagr_automaton_experiments_nodes} shows the progression of nodes during
+% execution.  Note that the node ID's above 2400 are those added during the
+% augmentation process; without these, the execution would have ceased earlier due to
+% disturbances.  Given the augmented automaton, the system is able to search for a node
+% whose policy contains the current pose.  Eventually, the execution did quit when a
+% disturbance finally took the system out of the domain of all the policies.
+% \refig{lagr_automaton_experiments_policies} shows the policy switching induced by the
+% augmented automaton.  The experiment was repeated several times; the automaton
+% successfully induced the correct behavior each time until disturbances caused the
+% system to terminate; this points to the need for more policies to be added to the
+% policy suite.
+
+% \begin{figure}[bt]
+%   \centering 
+%   \psfrag{3500}{3500}
+%   \psfrag{3000}{3000}
+%   \psfrag{2500}{2500}
+%   \psfrag{2000}{2000}
+%   \psfrag{1500}{1500}
+%   \psfrag{1000}{1000}
+%   \psfrag{500}{500}
+%   \psfrag{Time (s)}{Time (s)}
+%   \psfrag{Node ID}{Node ID}
+%   \psfrag{Automaton Nodes}{}
+%    \includegraphics[width=0.7\linewidth]{graphics/AutRnd5_Run4_nodes.eps}
+
+%    \caption[`LAGR' node switching during experiment]{Node switching with
+%      invocations of augmented nodes shown by 'x'; the controller would have ceased
+%      execution were it not for these added nodes.}
+%    \label{fig:lagr_automaton_experiments_nodes}
+% \end{figure}
+
+
+
+% \begin{figure}[bt]
+%   \centering 
+%   \psfrag{3500}{3500}
+%   \psfrag{3000}{3000}
+%   \psfrag{2500}{2500}
+%   \psfrag{2000}{2000}
+%   \psfrag{1500}{1500}
+%   \psfrag{1000}{1000}
+%   \psfrag{500}{500}
+%   \psfrag{Time (s)}{Time (s)}
+%   \psfrag{Policy ID}{Policy ID}
+%    \psfrag{Policy}{}
+%   \includegraphics[width=0.7\linewidth]{graphics/AutRnd5_Run4_policies.eps}
+
+%    \caption[`LAGR' policy switching during experiment]{Policy switching during an experiment.}
+%    \label{fig:lagr_automaton_experiments_policies}
+% \end{figure}
+
+% The drawback to the augment and search approach is that there is no history;
+% therefore, the system will sometimes repeat an earlier portion of the patrol loop,
+% prior to visiting the other nodes.  This problem could be addressed by adding an
+% output that encodes which ``downstream'' check point will be encountered next, and
+% using this information to guide the search for a valid node.  This requires
+% associating each policy with the closest checkpoint before the synthesis.  One
+% possible approach is to choose the checkpoint that generates the least cumulative
+% cost for a given policy from a set of costs generated by considering each checkpoint
+% as the goal of a policy ordering.  During disturbance recovery, the system searches
+% for a node whose associated policy domain contains the current pose and whose
+% ``ClosestCheckpoint'' output matches the assigned checkpoint for that policy.
+
+% The automata-base approach is capable of producing complex behaviors, which allow the
+% system to react to changes in the environment via the binary environmental inputs.
+% Additionally, the automata-based approach allows the system to exhibit desirable
+% limit cycles; in this example, repeatedly patrolling a hallway.  Thus automata-based
+% approaches are more suitable for repetitive tasks than order-based approaches.  That
+% said, the automata should make use of all available policies, and provide a method of
+% recovery, in order to maintain robustness to disturbance that is the hallmark of
+% order-based approaches.
+
+% %\FloatBarrier%afterpage{\clearpage}
+
+% \subsection{Ackermann Steered Car-like Parking Simulations}
+% \label{sec:ackermann_automaton}
+
+% \begin{figure}[bt]%[ht]
+% \begin{center}
+
+%  \vspace{0.2in}
+
+%  \includegraphics[width=\linewidth]{graphics/sim_parking_demo.eps} 
+
+%   \caption[Local parking behavior induced by meta-policy]{Parking behavior induced by
+%     the composition of local policies.  The feedback control policies guarantee the
+%     safety of the maneuver.}
+% \label{fig:parking}
+% \end{center}
+% \end{figure}
+
+% This section provides an example of policy-based planning with the more complex
+% system model of an Ackermann steered car.  Here, the scenario is one of searching for
+% an available parking space, and then parking.  The environment is known; what is
+% unknown is whether a given parking space is available or occupied.  The system has a
+% local sensor for detecting open parking spaces; thus, the system must search for an
+% available parking space by systematically driving past all the parking spaces.  If an
+% open parking space is found, the system changes behavior from searching to parking,
+% and executes the parking maneuver as illustrated in \refig{parking}.  The results
+% demonstrate coupled planning and control for a complex system that exhibits complex
+% behaviors that change based on reactions to the changing environment.
+
+% \begin{figure}[bt]
+%   \centering
+%   \includegraphics[width=0.7\linewidth]{graphics/sim_parking_run_0_world.eps}
+%   \caption[Environment for parking simulations]{The environment has 40 parking spaces
+%     arranged around the middle city block.  Initially, there are five empty parking
+%     spaces randomly chosen in the environment.}
+%   \label{fig:acker_parking_world}
+% \end{figure}
+
+% The environment, shown in \refig{acker_parking_world}, consists of two city blocks
+% accessible from ten entering roads.  Each road consists of two lanes that follow the
+% American standard of driving on the right side.  One block is surrounded by 40
+% parking spaces; 20 for the clockwise direction and 20 for the counterclockwise
+% direction. The entry/exit points are labeled 1-10 clockwise starting from the
+% north/south lanes at the top left of the environment.  The parking spaces are
+% identified with a numeric identifier adjacent to each space.  The roadway lanes and
+% parking spaces are sized for an urban environment.  The robot system uses an
+% Ackermann steered kinematic model that controls the forward velocity and the rate of
+% steering angle change; see \reapp{robots} for details.
+
+% \begin{figure}[bt]
+%  \begin{center}
+%  \begin{minipage}[b]{\linewidth}
+%  \begin{minipage}[b]{0.48\linewidth}
+%   \centering 
+%   \includegraphics[width=\linewidth]{graphics/parkway_details_parking.eps}
+
+%  {\scriptsize a) Policies for parking.}
+%    \end{minipage}
+%  \hspace{0.03\linewidth} % To get a little bit of space between the figures
+%  \begin{minipage}[b]{0.48\linewidth}
+%    \centering 
+%    \includegraphics[width=\linewidth]{graphics/parkway_details_leaving.eps}
+
+%   {\scriptsize b) Policies for leaving}
+%  \end{minipage}
+
+%  \end{minipage}
+ 
+%  \caption[Parking policy details]{Details of policies used for parking
+%    and leaving.  The policies, which are shown relative to the cache
+%    reference point, are shown wider than normal to show details.  Six
+%    policies are associated with parking.  Five policies are used to
+%    exit a parking space and prepare policy in the traffic lane.}
+%   \label{fig:parkway_details}
+% \end{center}
+% \end{figure}
+
+% The parking demonstrations use a collection of 16 \PF style policies, which are
+% instantiated in the policy cache relative to the origin.  The cache includes policies
+% for traveling straight down a roadway lane, for parking and leaving a given space,
+% and for turning at intersections.  \refig{parkway_details} shows examples of the
+% policies for parking and leaving, which treated as meta-policies for planning
+% purposes.  Associated with the inlet policy of the parking policy is a sensor that
+% determines whether the parking space is available.  If the parking space is
+% unavailable, then the parking meta-policy prepares some other policy further down the
+% roadway lane.  \refig{parkway_intersection} shows an example intersection, the
+% deployed policies, and the extent of the robot body into the workspace.  Since this
+% is a simulation, only those policies needed for basic traffic are deployed.  No
+% attempt is made to fill the free pose space in order to provide robustness.
+
+
+% \begin{figure}[bt]
+%  \begin{center}
+%  \begin{minipage}[b]{\linewidth}
+%  \begin{minipage}[b]{0.48\linewidth}
+%   \centering 
+%   \includegraphics[width=\linewidth]{graphics/parkway_intersection_lanes.eps}
+
+%   \end{minipage}
+%  \hspace{0.03\linewidth} % To get a little bit of space between the figures
+%  \begin{minipage}[b]{0.48\linewidth}
+%    \centering 
+%    \includegraphics[width=\linewidth]{graphics/parkway_intersection_padded.eps}
+
+%  \end{minipage}
+
+%  \begin{minipage}[b]{0.48\linewidth}
+%   \centering 
+
+%   {\scriptsize a) Connected policy domains projected into workspace}
+
+%  \end{minipage}
+%  \hspace{0.03\linewidth} % To get a little bit of space between the figures
+%  \begin{minipage}[b]{0.48\linewidth}
+%    \centering 
+
+%    {\scriptsize b) Body extent over the policy domains}
+
+%  \end{minipage}
+%  \end{minipage}
+ 
+%  \caption[Policies deployed at intersection]{Deployment of policies at an
+%    intersection.  The polices include those that pass straight through the
+%    intersection, as well as left and right turns.  Other policies are used to tie the
+%    straight sections to the turns.  The policy domains, which are widened to increase
+%    visibility, appear as thick lines in (a).  }
+%   \label{fig:parkway_intersection}
+% \end{center}
+% \end{figure}
+
+% For the simulations in this section, a total of 306 policies are deployed in the
+% environment.  The regularity of the environment allows an automated approach to
+% policy instantiation based on a collection of reference points defined relative to
+% the intersections and parking spaces.  The policy total includes 40 parking
+% meta-policies and 40 leaving meta-policies, as well as 24 each left, right and
+% straight maneuvers at the six intersections.  Policies to enter and leave the
+% environment are added at the 10 roadways connecting the environment to the outside
+% world.  Given the suite of 306 policies, the prepares graph is automatically defined
+% as described in \resec{nonholo}.
+
+
+% %\FloatBarrier%afterpage{\clearpage}
+
+% \subsubsection{Basic Parking Scenarios}
+% \label{sec:acker_parking}
+
+% The basic scenario considers a single car that must park in the environment.  The
+% environmental input is a sensor called `\PARK' that tells the car if a parking space
+% is available; the system output identifies which policy to activate.  The car may
+% enter from any of the ten roadways connecting to the two blocks.  The car can only
+% determine whether there is a free parking space if we are in a policy next to it.
+% This means that `Park' cannot become \TRUE\ if the vehicle is not next to a parking
+% space or in one. Also, for implementation reasons, we assume that the input `Park'
+% remains \TRUE\ after parking.  We have no assumptions on the goals of the environment,
+% and make no assumptions about the availability of an empty parking spot.  The
+% allowable system transitions include the transitions of the prepares graph, the
+% vehicle cannot park if there is no parking space available, as indicated by the
+% `Park' input, and if there is an empty parking space the car must park; removing the
+% last restriction may allow the vehicle to pass an open spot before parking.  The
+% system goal encodes a list of policies the vehicle must visit infinitely often if it
+% has not parked yet.  The list of policies to visit defines the area in which the
+% vehicle will look for an available parking space; in this case, the visit policies
+% correspond to the eight lanes around the parking spaces (four going clockwise and
+% four going counter clockwise).  Note, this goal condition is true if either the
+% vehicle visits these policies infinitely often (when there is no parking space
+% available) or it has parked.  Defining a different list of policies to visit would
+% change the search strategy induced by the automaton.  Additional specifications could
+% be written to tie the search strategy to the point of entry, but this would increase
+% the size and complexity of the automaton.
+
+% For simulations shown in Figures~\ref{fig:acker_parking_runs_12}
+% and~\ref{fig:acker_basicSim}, a new vehicle is introduced at a random entrance.  The
+% parking spaces are filled according to the previous run.  As the automaton executes,
+% if a parking policy is a successor to the current state, the empty/occupied status is
+% checked via the local `Park' sensor. This work does not address the required sensor,
+% but assumes a binary output.  Transition to the parking policy is enabled if the
+% associated space is empty.  If the transition is enabled, `Park' remains \TRUE\ so that
+% other transitions are disabled until the vehicle pose enters the domain of the
+% parking meta-policy, and the system parks.  Six runs are simulated using the global
+% parking automaton; The first five runs park.  In Run \#6, there are no parking spaces
+% available; therefore, the vehicle continues to circle past every possible parking
+% space, waiting on another vehicle to leave.
+
+
+
+%  \begin{figure}%[tb]
+%    \begin{center}
+%    \begin{minipage}[b]{\linewidth}
+%    \begin{minipage}[b]{0.44\linewidth} 
+%    \centering 
+%    \includegraphics[width=\linewidth]{graphics/sim_parking_run_1_world.eps}   
+  
+%    \vspace{-1.6ex}
+%    {\small Run \#1} 
+%    \end{minipage}
+%   \hspace{0.03\linewidth}
+%   \begin{minipage}[b]{0.44\linewidth}
+%    \centering  
+%    \includegraphics[width=\linewidth]{graphics/sim_parking_run_2_world.eps} 
+  
+%    \vspace{-1.6ex}
+%    {\small Run \#2}
+%  \end{minipage} 
+%  \end{minipage}  
+%  \caption[Two executions of parking simulation]{Two executions of the basic parking
+%    scenario.  The initial conditions for each run are circled. }
+%     \label{fig:acker_parking_runs_12}
+
+%  \end{center}
+%  \end{figure}
+
+%  \begin{figure}%[tb]
+%    \begin{center}
+%    \begin{minipage}[b]{0.44\linewidth} 
+%    \centering 
+%    \includegraphics[width=\linewidth]{graphics/sim_parking_run_3_world.eps}   
+  
+%    \vspace{-1.6ex}
+%    {\small Run \#3} 
+%    \end{minipage}
+%   \hspace{0.03\linewidth}
+%   \begin{minipage}[b]{0.445\linewidth}
+%    \centering  
+%    \includegraphics[width=\linewidth]{graphics/sim_parking_run_4_world.eps} 
+  
+%    \vspace{-1.6ex}
+%    {\small Run \#4}
+%  \end{minipage} 
+
+%    \vspace{0.5ex}
+
+%    \begin{minipage}[b]{0.44\linewidth} 
+%    \centering 
+%    \includegraphics[width=\linewidth]{graphics/sim_parking_run_5_world.eps}   
+  
+%    \vspace{-1.6ex}
+%    {\small Run \#5} 
+
+%    \end{minipage}
+%   \hspace{0.03\linewidth}
+%   \begin{minipage}[b]{0.44\linewidth}
+%    \centering  
+%    \includegraphics[width=\linewidth]{graphics/sim_looping_run_6_world.eps}
+ 
+%    \vspace{-1.6ex}
+%    {\small Run \#6}
+
+%  \end{minipage} 
+
+ 
+%  \caption[Four executions of parking simulation]{Four executions of the basic parking
+%    scenario.  The initial conditions for each run are circled.  The last run
+%    continues to loop as no parking spaces are available. }
+%     \label{fig:acker_basicSim}
+
+%  \end{center}
+%  \end{figure}
+
+% %%\FloatBarrier
+% %
+% % \subsection{Multi-vehicle Scenarios}
+% % \label{sec:acker_multi_car}
+% %
+% % The automata-based approach to policy composition naturally extends to multi-agent
+% % systems~\cite{hadas_07}.  The local policies guarantee predictable local behavior of
+% % a single agent; the automata governs the switching between local policies to
+% % coordinate the high-level behavior of an agent.  Taking this approach further,
+% % Kress-Gazit \ea~\cite{hadas_07} use the environmental inputs to coordinate behavior
+% % between agents using automata.  Each agent runs its own automata-based hybrid
+% % controller, which responds to other agents via environmental inputs; that is, the
+% % outputs of one agent become inputs to another agent.  This section details a
+% % simulation using the policy composition approach advocated in this thesis with the
+% % automata-based multi-agent coordination scheme advocated in~\cite{hadas_07}.  The
+% % simulation results illustrate several issues that arise with this approach.
+% %
+% % In order to expand the basic parking approach to allow for multiple vehicle
+% % scenarios, the LTL formulas from above are modified.  The approach uses an additional
+% % input and several outputs.  The additional input is `Hazard', which causes the
+% % vehicle to stop in place.  The hazard can be triggered by proximity to another
+% % vehicle, or by an external device such as a stop-light.  When the hazard clears, the
+% % robot should resume motion as before.  In a real system, many hazards can be avoided
+% % by slowing down, and waiting for the other vehicle to clear.  For simplicity, these
+% % simulations require the system to stop.  When the vehicle stops in response to a
+% % `Hazard', the system outputs `\STOP'.  Additional outputs signal `\LEFT' and `\RIGHT'
+% % as appropriate.  There are also outputs that signal the vehicles intentions for
+% % `Parking' and `Leaving'.  The automaton outputs can be sensed by other vehicles in
+% % the environment.
+
+% % The LTL specifications from above are modified to take the new inputs
+% % and outputs into consideration, and allow a new ``leaving'' behavior.
+% % Each vehicle in the simulation runs a local copy of one of two
+% % automata.  The only coordination is via the individual `Hazard'
+% % sensor.  We now consider each automaton in turn.
+
+% % \paragraph{Parking Automaton}
+% % The parking automaton for the multi-vehicle scenario is similar to the individual
+% % case, but includes the stopping behavior and the additional outputs.  The system
+% % transitions include all the conditions of the individual parking case, plus the
+% % conditions that activate the outputs for turning, stopping, or parking as needed.
+% % The system goal is includes the parking conditions, but also allows for a vehicle to
+% % remain stopped if a broken stop-light or accident ahead blocks the roadway.  With
+% % these specifications, the parking automaton has 2142 nodes.
+
+
+% % \paragraph{Leaving Automaton}
+% % In this scenario, a vehicle is leaving its parking space and exiting the block via
+% % some specified exit. The leaving automaton for the multi-vehicle scenario has an
+% % extra input that specifies which of the ten possible exits the vehicle will exit.
+% % The initial environment specification is such that only one exit is specified.  Two
+% % different vehicles leaving two different parking spots may use the same synthesized
+% % automaton with different inputs that designate the desired exit.  We require the exit
+% % specification to be constant, meaning it cannot change once it is given.  We make no
+% % assumptions on the infinite behavior of the environment, therefore the goal component
+% % remains set to \TRUE.  Initially, the car is leaving a parking space, hence it must
+% % turn on the left turn signal.
+
+% % The system transitions are include the policy prepares relations, which policies turn
+% % on the left/right signals, and always stop on hazard.  The system goal specifies that
+% % the vehicle must go to the designated exit policy unless it stops.  With these
+% % specifications the leaving automaton has 1908 nodes.
+
+% % The key to using these automata in a decentralized multi-agent scenario is the
+% % coordination provided by the `Hazard' sensor.  Each vehicle executes its own hazard
+% % sensor with a single binary value `Hazard.'  The `Hazard' input is based on either a
+% % timed stop-light or a proximity/precedence sensor.  The stop-light alternates between
+% % north/south and east/west travel along the roadways.  Each intersection transitions
+% % at the same time; there is a slight overlap where all directions are stopped.  Any
+% % vehicle entering the policies just before the left/right/straight policies at each
+% % intersection checks the current value of the stop-light.  If the ``red light'' is
+% % visible, the `Hazard' flag is set to \TRUE.
+
+% % The `Hazard' sensor is a discrete hybrid automaton in its own right, that attempts to
+% % determine precedence based on the robot's internal state and binary outputs, and the
+% % other robots relative pose, velocity, and binary outputs.  Thus the ``sensor'' is a
+% % mixture of continuous measurements and discrete logic.  The `Hazard' checks proximity
+% % of other vehicles, and determines the precedence relationships between vehicles; that
+% % is, which vehicle must yield to the other.  For this simulation, the `Hazard' sensor
+% % is hand-coded and tuned to given the proper performance.  The sensor automaton sets
+% % `Hazard' to \TRUE\ whenever the car is too close to a car ahead of it (keeping safe
+% % distance), whenever a car ahead is backing up to park (being polite), whenever the
+% % car is leaving a parking space and another car passes by and whenever another car is
+% % leaving a parking space which the car will park in next.  In this decentralized
+% % coordination scheme, each vehicle's `Hazard' sensor must infer the intentions of the
+% % others based their outputs.  There is no centralized communication of intentions.
+
+% % \begin{figure}[bt]%[tb]
+% %   \begin{center}
+% %   \begin{minipage}[b]{0.45\linewidth} 
+% %   \centering 
+% %   \includegraphics[width=0.9\linewidth]{graphics/sim_hazard_run_7a.eps} 
+  
+% %   {\small Run \#7 - a} 
+
+% %   \end{minipage}
+% %  \hspace{0.03\linewidth}
+% %  \begin{minipage}[b]{0.45\linewidth}
+% %   \centering  
+% %   \includegraphics[width=0.9\linewidth]{graphics/sim_hazard_run_7b.eps} 
+
+% %   {\small Run \#7 - b}
+% % \end{minipage} 
+
+% % \caption[Simple multi-vehicle traffic simulation]{In this continuation of Run \#6,
+% %   the two snap shots show a simple multiple vehicle scenario.  A timed stop-light
+% %   triggers a `hazard' input that causes the vehicle heading east to stop.  This
+% %   allows the vehicle from Run\#6 to travel through the intersection, and eventually
+% %   park in the newly available parking spot.}
+% %    \label{fig:acker_multipleSim}
+
+% % \end{center}
+% % \end{figure}
+
+% % \refig{acker_multipleSim} shows the continuation of Run \#6 with the
+% % hazard inputs added to the parking automaton, and the new leaving
+% % automaton controlling the second vehicle.  In the first snapshot,
+% % vehicle \#6 is just beginning to approach the intersection, while
+% % vehicle \#7 stops for the light.  The second snapshot shows vehicle
+% % \#7 dutifully waiting for the signal, while vehicle \#6 has passed
+% % through the intersection.  Although not shown, after the stop-light
+% % changes, vehicle \#7 exits the area and vehicle \#6 continues around
+% % under the control of the global parking automaton and parks in the
+% % newly open spot.
+
+% % %%\FloatBarrier
+
+% % \begin{figure}[bt]
+% %   \centering
+% %   \includegraphics[width=0.60\linewidth]{graphics/sim_parking_run_5_t1591.eps}
+% %   \caption[Snapshot of complex multi-vehicle traffic simulation]{A snapshot of a more
+% %     complex multi-vehicle simulation.  Each vehicle executes an
+% %     automaton that encodes the high-level specification ``stop on
+% %     hazard'' and either ``drive around until you find a free parking
+% %     space and then park'' or ``leave your parking space and exit the
+% %     block''.  Coordination between robots is done via an individual
+% %     `Hazard' sensor in a decentralized approach.  This snapshot is
+% %     taken at 15.91 seconds.}
+% %   \label{fig:acker_multi_run1}
+% % \end{figure}
+
+% % \refig{acker_multi_run1} shows an example of a more complex multi-vehicle simulation.
+% % At this point in time, seven cars are moving in the workspace.  Initially, 35 of the
+% % 40 parking spaces were randomly specified as occupied.  In this simulation, eight
+% % cars enter the block at different times and from different entry points, looking for
+% % a parking space. The times and entry points are (t=0.06 seconds, Entry = 10),
+% % (1.0,2), (2.0,7), (5.0,8), (7.0, 5), (10.0,6), (15.0, 8), (22.0,5).  During the
+% % execution, three cars leave their parking spaces and exit the workspace.  The times,
+% % parking spaces, and exit point are (t=13.0, Parking=23,exit=1), (15.0, 6, 7), and
+% % (30.0, 32, 5).  The simulation runs until 76.33 seconds of elapsed time when the last
+% % car exits or is parked.  \refig{simGeneral} shows a general snapshot of the
+% % simulation at a later time.  Cars whose `Stop' output is \TRUE\ are marked with red
+% % ellipses; that is, those cars who stop because the `Hazard' input is \TRUE.  The
+% % three stopped cars in \refig{simGeneral} are obeying stop-lights.
+
+% % \begin{figure}[bt]
+% %   \centering
+% %   \includegraphics[width=0.6\linewidth]{graphics/sim_parking_run_5_t3133_Haz.eps}
+% %   \caption[Later snapshot of multi-vehicle simulation]{A later
+% %     snapshot taken at 31.33 seconds during the simulation. In this
+% %     figure, cars surrounded by red ellipses are cars that are stopping
+% %     due to the `Hazard' input signaled by the timed stop-light.}
+% %   \label{fig:simGeneral}
+% % \end{figure}
+
+% % %%\FloatBarrier
+
+% %  \begin{figure}[bt]
+% %    \begin{center}
+% %    \begin{minipage}[b]{\linewidth} 
+% %    \begin{minipage}[b]{0.45\linewidth} 
+% %    \centering 
+% %    \includegraphics[width=\linewidth]{graphics/sim_parking_run_5_t1591_Haz_close.eps}   
+% % %  
+% %    \vspace{0.4ex}
+% %    {\small (a) Blue car leaving (t=15.91 s)} 
+% %    \end{minipage}
+% %   \hspace{0.03\linewidth}
+% %    \begin{minipage}[b]{0.431\linewidth} 
+% %    \centering 
+% %    \includegraphics[width=\linewidth]{graphics/sim_parking_run_5_t3469_Haz_close.eps}   
+% % %  
+% %    \vspace{0.4ex}
+% %    {\small (b) Red car parking (t=34.69 s)} 
+% % %
+% %    \end{minipage}
+% %    \end{minipage}
+% %  %
+
+% %    \vspace{0.8ex}
+
+% %    \begin{minipage}[b]{\linewidth} 
+% %    \begin{minipage}[b]{0.46\linewidth}
+% %    \centering  
+% %    \includegraphics[width=\linewidth]{graphics/sim_parking_run_5_t1629_Haz_close.eps} 
+% % %
+% %    \vspace{0.4ex}
+% %    {\small (c) Yielding to turn in progress (t=16.29s)}
+% %  \end{minipage} 
+% %   \hspace{0.03\linewidth}
+% %    \begin{minipage}[b]{0.45\linewidth} 
+% %    \centering 
+% %    \includegraphics[width=\linewidth]{graphics/sim_parking_run_5_t2641_Haz_close.eps}   
+% % %  
+% %    \vspace{0.4ex}
+% %    {\small (d) Two cars parking (t=26.41s)} 
+% % %
+% %    \end{minipage}
+% %    \end{minipage}
+% % %
+% %   \vspace{0.8ex}
+% % %
+% % %  
+% %     \begin{minipage}[b]{\linewidth} 
+% %  \begin{minipage}[b]{0.45\linewidth}
+% %    \centering  
+% %    \includegraphics[width=\linewidth]{graphics/sim_parking_run_5_t2718_Haz_close.eps}
+% % % 
+% %    \vspace{0.4ex}
+% %    {\small (e) Two cars parking (t=27.18)}
+% % %
+
+% %  \end{minipage} 
+% %   \hspace{0.03\linewidth}
+% %   \begin{minipage}[b]{0.45\linewidth}
+% %    \centering  
+% %    \includegraphics[width=\linewidth]{graphics/sim_parking_run_5_t4639_Haz_close.eps}
+% % % 
+% %    \vspace{0.4ex}
+% %    {\small (f) Two cars at stop-light (t=46.39s)}
+% % %
+% %  \end{minipage} 
+% %  \end{minipage} 
+% % %
+ 
+% %  \caption[Close up of multi-vehicle behaviors]{Close up looks at different behaviors
+% %    seen throughout the simulation.  }
+% %     \label{fig:aker_multi_SimClose}
+% % %
+% %  \end{center}
+% %  \end{figure}
+
+% %  \refig{aker_multi_SimClose} shows several close up looks at different traffic
+% %  behaviors encountered during the simulation. In (a), the blue car which is leaving
+% %  the parking space has stopped, indicated by a red ellipse, to let the brown car
+% %  drive by. This `Hazard' was invoked based on a ``proximity sensor.'' In (b), red car
+% %  is parking while the blue car waits for it to finish before passing.  In (c), the
+% %  orange car is stopping to allow the gray car to complete a left turn, according to
+% %  the precedence established by the individual car's `Hazard' sensors.  The white car
+% %  on the left is leaving the parking space that later will be occupied by the brown
+% %  car. Figures~\ref{fig:aker_multi_SimClose}-d and (e) are two snapshots of two cars
+% %  parking simultaneously in opposite lanes. The car that started the parking maneuver
+% %  later (bottom lane) pauses to allow the other car to park safely.
+% %  \refig{aker_multi_SimClose}-f shows two cars stopping before a stop-light. While the
+% %  white car stopped based on the stop-light, the black car behind stopped based on the
+% %  proximity to the car ahead of it.
+
+% % %\FloatBarrier
+
+% %  Sensors, or more specifically the binary inputs used by the automaton, are
+% %  fundamental to the success of this decentralized approach.  First, as mentioned
+% %  above, the sensors must satisfy the assumptions made about them in the LTL formulas
+% %  for the environment; otherwise the automaton will not be correct. Failing to trigger
+% %  `Hazard' may allow collision as the local policies do not consider obstacle
+% %  avoidance.  Second, even if the sensors do satisfy these assumptions, they may still
+% %  cause correct, yet unintended behavior. For example, if the proximity sensor set the
+% %  `Hazard' input to \TRUE\ whenever another vehicle was in a certain radius, even if the
+% %  other vehicle was behind in a forward driving lane, both vehicles may get
+% %  deadlocked; that is, both would stop forever.  While this behavior satisfies the
+% %  original specification, it does not follow the spirit of finding a parking space.
+% %  On the other hand, both cars stopping might be a desired behavior when an accident
+% %  occurred, therefore we would not want to forbid it in the specifications.
+ 
+% %  Currently, there are no guarantees that the implemented `Hazard' sensor automaton is
+% %  correct in all cases, and will not introduce deadlock.  Such unintended behavior
+% %  would not be present in a centralized approach where the controller has full
+% %  knowledge and not just local information as is the case here; however, the
+% %  centralized approach does not scale well.  The decentralized approach, which does
+% %  scale well for additional robots, may deadlock for a poorly designed hazard sensor;
+% %  thus, much work remains to develop automatic ways of specifying the `Hazard' sensor
+% %  automaton and prove that the composition of these multiple automata is free of
+% %  deadlock.
+% %  %This is a classical problem in concurrent systems; fairness
+% %  %assumptions must be imposed on the inputs to ensure that the system
+% %  %will not deadlock.
+
+% % %\FloatBarrier
+
+% \subsection{Summary}
+% \label{sec:planning_summary}
+
+% This chapter has presented several experiments which validate the approach advocated
+% in this thesis.  The approaches to planning in the space of control policies, and
+% composing local policies to induce the desired behavior, is demonstrated with
+% experiments on real robots and simulations on realistic systems.  A range of planning
+% approaches and scenarios are demonstrated.  To our knowledge, this is the first
+% experimental verification of these techniques on real wheeled mobile robots with
+% non-circular body shapes; that is, body shapes where orientation is fundamental to
+% the safety of the approach.
+
+% Several broad conclusions can be drawn from these results.  In general, order-based
+% approaches are preferred over sequence based approaches due to the enlarged domain;
+% this is in keeping with the aim of designing ``global'' policies.  Automata-based
+% approaches are useful for generating complex reactive tasks; the policy composition
+% approach advocated in this thesis extends these techniques to real world, complex
+% systems.
+
+% Overall, the results validate the approach; however, several issues have been
+% identified.  First, the policies can only induce behaviors that the system execute.
+% If the mechanical system is incapable responding to the controls, the properties of
+% composable policies will be violated.  Thus, either the system dynamics must be
+% modified, the policies redesigned, or additional policies added to provide more
+% robustness.  Since disturbances are a fact of life, automata-based approaches should
+% make use of all available policies in keeping with the global policy theme, and
+% provide a method of recovery in the face of large disturbances.  The hybrid control
+% policy should also have a method of identifying undesirable limit cycles, and have a
+% recovery strategy.  Finally, while the automata-based approach to decentralized
+% multi-agent control is promising, the design of a hybrid sensor automata, which can
+% provide provably correct performance with the composition of individual automata,
+% remains an open problem.
+
+
+
+

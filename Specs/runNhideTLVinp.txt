@@ -1,0 +1,273 @@
+function runNhideTLVinp(adj_mat, init_policy, closest, visit_policy,avoid_policy, hide_policy, addHazard, gotoClosest, FileName)
+% This function creates skellaton .smv and .pf files for TLV
+% These files are for the "Run and Hide" scenario (for David Conner)
+% Inputs:
+% adj_mat = Adjecancy ("prepares") matrix of policies
+% init_policy = indices of possible initial policy
+% closest = for each init_policy, the closest visit_policy (to order the
+% goals in a more intuitive way)
+% visit_policy = indices of policies to be visited
+% avoid_policy = indices of policies to be avoided
+% hide_policy = index of policies to hide in
+% addHazard = add hazard behavior
+% gotoClosest = whether to go to closest policy
+% FileName = name of the files to be written - no extension
+%
+% Outputs
+% FileName.smv - skellaton smv file containing only the variables
+% FileName.pf - containing the LTL formula and the commands for the
+%                           synthesis.
+
+smvFileName = strcat(FileName,'.smv'); 
+pfFileName = strcat(FileName,'.pf'); 
+
+num_policies = size(adj_mat,1); % number of policies
+num_policy_bits = ceil(log2(num_policies)) ;% number of bits needed to encode the policies
+num_visit_policies = length(visit_policy); % number of visit policies
+num_avoid_policies = length(avoid_policy); % number of policies to avoid
+
+
+% Skellaton SMV file 
+%~~~~~~~~~~~~~~~~~~~~~~ 
+SmvFile = fopen(smvFileName,'w');
+fprintf(SmvFile, ' -- Skellaton SMV file for  %s \n', FileName);
+fprintf(SmvFile, ' \n \n');
+fprintf(SmvFile, 'MODULE main \n \t');
+fprintf(SmvFile, 'VAR \n');
+if addHazard
+    % input - hazard
+    fprintf(SmvFile,'\t \t hazard  :  boolean;\n');
+end
+% input - RnH (Run and Hide)
+fprintf(SmvFile,'\t \t RnH  :  boolean;\n');
+% output - policy number
+for i = 1:num_policy_bits
+    fprintf(SmvFile,'\t \t bit%d  :  boolean;\n',i-1);
+end
+% output - checkPoint
+fprintf(SmvFile,'\t \t checkPoint  :  boolean;\n');
+
+if addHazard
+    % output - stop
+    fprintf(SmvFile,'\t \t stop  :  boolean;\n');
+end
+
+if gotoClosest
+    % "output" - internal signal - to know to which goal to go first
+    for i=1:num_visit_policies
+        fprintf(SmvFile,'\t \t init%d  :  boolean;\n',visit_policy(i));
+    end 
+end
+
+fclose(SmvFile);
+
+
+% Creating a cell arrays of strings - each an encoding of a policy 
+Policy_enc=cell(num_policies);
+Policy_enc_nxt=cell(num_policies);
+for i=1:num_policies
+    bin_enc = dec2bin(i,num_policy_bits);
+    Policy_enc{i}=' ';
+    Policy_enc_nxt{i}=' ';
+    for j=1:num_policy_bits
+        if j>1 
+            Policy_enc{i} = [Policy_enc{i},' & ']; 
+            Policy_enc_nxt{i} = [Policy_enc_nxt{i},' & ']; 
+        end
+        if bin_enc(j)=='1'
+            Policy_enc{i} = [Policy_enc{i},'bit',num2str(j-1)]; 
+            Policy_enc_nxt{i} = [Policy_enc_nxt{i},'next(bit',num2str(j-1),')']; 
+        else
+            Policy_enc{i} = [Policy_enc{i},'!bit',num2str(j-1)];
+            Policy_enc_nxt{i} = [Policy_enc_nxt{i},'!next(bit',num2str(j-1),')'];
+        end
+    end
+end
+
+
+
+% PF file 
+%~~~~~~~~~~~
+PFFile = fopen(pfFileName,'w');
+fprintf(PFFile, ' -- PF file for  %s \n', FileName);
+fprintf(PFFile, ' Load "new_synthesis.tlv";\n\n');
+fprintf(PFFile, ' Let ts := compile_spec(\n');
+fprintf(PFFile, ' \t ltl( \n');
+
+%%% Environment "side"
+%~~~~~~~~~~~~~~~~~~~~~~~
+fprintf(PFFile, ' \t\t\t( '); 
+% RnH can be either true of false 
+fprintf(PFFile,' TRUE ' );
+if addHazard
+    % Initialize hazard to false
+    fprintf(PFFile,' & !hazard ' );
+end
+fprintf(PFFile,'  & \n\t\t\t\t ' );
+fprintf(PFFile,' [](TRUE) & \n' );
+fprintf(PFFile, ' \t\t\t\t( []<>(TRUE) )\n'); 
+fprintf(PFFile, ' \t\t\t)\n\t\t\t->\n\t\t\t(');
+
+
+%%% System "side"
+%~~~~~~~~~~~~~~~~~~~~~~~
+% initial condition (possible initial policies)
+fprintf(PFFile,' ( ');  
+
+for i=1:length(init_policy)
+    if i>1
+        fprintf(PFFile,'\n\t\t\t\t | '); 
+    end
+    fprintf(PFFile,' ((%s) ',Policy_enc{init_policy(i)} );
+    for j=1:num_visit_policies
+        if closest(i)==visit_policy(j)
+            fprintf(PFFile,' & init%d', visit_policy(j));
+        else
+            fprintf(PFFile,' & !init%d', visit_policy(j));
+        end
+    end
+    fprintf(PFFile,')');
+end
+fprintf(PFFile,' ) & \n',Policy_enc{init_policy} );
+fprintf(PFFile,'\t\t\t (!checkPoint ) & \n');
+if addHazard
+   fprintf(PFFile,'\t\t\t (!stop ) & \n');
+end 
+
+% transition relation ("prepares" relation)
+for i=1:num_policies
+    succ = find(adj_mat(i,:));
+    fprintf(PFFile,'\t\t\t []( (%s) -> ( (%s) ',Policy_enc{i}, Policy_enc_nxt{i}); 
+    for j=1:length(succ)
+        fprintf(PFFile,'\n\t\t\t\t\t\t\t\t\t\t\t| (%s) ', Policy_enc_nxt{succ(j)}); 
+    end
+    fprintf(PFFile,' ) ) & \n ',Policy_enc{i}, Policy_enc_nxt{i}); 
+end
+
+if addHazard
+    % stop IFF hazard
+    fprintf(PFFile,'\t\t\t []( (next(hazard)) -> (next(stop)) ) & \n');
+    fprintf(PFFile,'\t\t\t []( (!next(hazard)) -> (!next(stop)) ) & \n');
+    % if hazard, or if stopped in the previous step, do NOT change policy
+    for i=1:num_policy_bits
+        fprintf(PFFile,'\t\t\t []( ( ((next(hazard)) | stop) & bit%d) -> (next(bit%d)) ) & \n',i-1,i-1);
+        fprintf(PFFile,'\t\t\t []( ( ((next(hazard)) | stop) & !bit%d) -> (!next(bit%d)) ) & \n',i-1,i-1);
+    end
+end
+
+% If "run and hide" and in the "hide" policy - stay there...
+fprintf(PFFile,'\t\t\t []( ((next(RnH))& (%s)) -> (%s) ) & \n',Policy_enc{hide_policy}, Policy_enc_nxt{hide_policy});
+
+% If NOT "run and hide" or Hazard - must leave "hide" policy 
+fprintf(PFFile,'\t\t\t []( (!(next(RnH)) ');
+if addHazard
+    fprintf(PFFile,' & !(next(hazard)) & !(stop)');
+end
+fprintf(PFFile,') -> !(%s) ) & \n', Policy_enc_nxt{hide_policy});
+
+% checkPoint should be true iff at check point (visit policy)
+fprintf(PFFile,'\t\t\t []( (');
+for i=1:num_visit_policies
+    if i>1
+        fprintf(PFFile,'\n\t\t\t\t\t\t\t\t | ');
+    end
+    fprintf(PFFile,'(%s)',Policy_enc_nxt{visit_policy(i)});
+end
+
+fprintf(PFFile,' )\n\t\t\t\t <-> (next(checkPoint)) ) & \n');
+
+
+% Avoid these policies
+for i=1:num_avoid_policies
+    fprintf(PFFile,'\t\t\t []( !(%s) ) & \n', Policy_enc_nxt{avoid_policy(i)});
+end
+
+% If initXXX if false it is always false
+for i=1:num_visit_policies
+    fprintf(PFFile,'\t\t\t []( !(init%d) -> !(next(init%d)) ) & \n ', visit_policy(i), visit_policy(i));
+end
+
+% If initXXX if true and the robot has not reached XXX, it must stay true
+for i=1:num_visit_policies
+    fprintf(PFFile,'\t\t\t []( (init%d & !(%s)) -> (next(init%d)) ) & \n ', visit_policy(i),Policy_enc_nxt{visit_policy(i)}, visit_policy(i));
+end
+
+% If the robot has reached XXX, initXX must be false
+for i=1:num_visit_policies
+    fprintf(PFFile,'\t\t\t []( (%s) -> !(next(init%d)) ) & \n ',Policy_enc_nxt{visit_policy(i)}, visit_policy(i));
+end
+
+
+% visit these policies or go to the hide policy
+for i=1:num_visit_policies
+    if i>1
+        fprintf(PFFile,' & \n');
+    end
+    % Cycle forever if not hiding 
+    fprintf(PFFile,'\t\t\t []<>( (%s) | RnH ', Policy_enc{visit_policy(i)});
+    % But start from the closest policy (hopefully the synthesis will
+    % obey...)
+    for j=1:num_visit_policies
+        if i~=j
+            fprintf(PFFile,'| init%d ', visit_policy(j));
+        end
+    end
+    
+    if addHazard
+        % or stop (due to hazard)
+        fprintf(PFFile,'| stop )', Policy_enc{visit_policy(i)});
+    else
+        fprintf(PFFile,')', Policy_enc{visit_policy(i)});
+    end
+end
+% Hide or stop (due to hazard)
+fprintf(PFFile,'& \n\t\t\t []<>( (%s) | !RnH ', Policy_enc{hide_policy});
+if addHazard
+    % or stop (due to hazard)
+    fprintf(PFFile,'| stop )', Policy_enc{visit_policy(i)});
+else
+    fprintf(PFFile,')', Policy_enc{visit_policy(i)});
+end
+
+fprintf(PFFile, ' \n ');
+
+
+
+fprintf(PFFile, ' \t\t\t)\n\t\t),\n '); % close the ltl formula
+
+% List the signals
+fprintf(PFFile, ' \t');
+fprintf(PFFile, '  RnH');
+if addHazard
+    fprintf(PFFile, ' & hazard');
+end
+fprintf(PFFile, ' , ');
+
+for i = 1:num_policy_bits
+    if i > 1
+        fprintf(PFFile, ' & ');
+    end
+    fprintf(PFFile,'bit%d',i-1);
+end
+fprintf(PFFile, ' & checkPoint');
+if addHazard
+    fprintf(PFFile, ' & stop');
+end
+for i=1:num_visit_policies
+    fprintf(PFFile,' & init%d',visit_policy(i));
+end 
+fprintf(PFFile, ' );\n\n');
+
+
+fprintf(PFFile, ' Settime;\n');
+fprintf(PFFile, ' check_realizability ts, (ts + 1);\n');
+fprintf(PFFile, ' find_strategy some_aut_name, ts, (ts + 1);\n');
+fprintf(PFFile, ' optimize_aut some_aut_name;\n');
+fprintf(PFFile, ' log "%s.txt";\n',strrep(pfFileName,'.pf',''));
+fprintf(PFFile, ' print_aut some_aut_name;\n');
+fprintf(PFFile, ' log;\n');
+fprintf(PFFile, ' Chktime;\n');
+fprintf(PFFile, ' Print "Automaton has been written in %s.txt";\n',strrep(pfFileName,'.pf',''));
+
+ fclose(PFFile);
+

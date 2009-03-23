@@ -1,0 +1,119 @@
+
+\paragraph{Benefits of Policy Composition}
+Since the hybrid control policy is based on local feedback control policies, the
+overall controller inherits the properties of the individual policies.  This allows
+the individual policies to be tuned to local conditions, whether to provide safety or
+enhanced performance.  The local policies, in order to be composable, have provable
+convergence guarantees, and retain the robustness to disturbances that is the
+hallmark of feedback control.  The local feedback control policies are designed to be
+memoryless, and allow for real time control.  Because each local policy has an
+explicit domain, the hybrid control approach is inherently safe.  If a disturbance
+takes the system outside the domains of all policies, the robot is halted and
+execution of the hybrid control policy terminates.
+
+By planning in the space of control policies using the prepares graph, the planning
+becomes very flexible with regard to task.  This approach opens the door to formal
+synthesis of hybrid feedback controllers for complex systems; for example the parking
+controller demonstrated in \rechap{planning}.
+%The size of the prepares graph is typically smaller than that required by a
+%conventional grid-based planner for the same navigation problem; thus, the speed of
+%planning and re-planning will be faster.  
+The approach allows analysis of the reachability of a goal, or realizability of a
+specification, with a given policy suite during the discrete planning phase, prior to
+execution.
+
+Using automata to execute the local feedback policies allow the
+systems to exhibit complex, multi-task behaviors.  The approach
+enables tasks to be specified at a high-level, and then executed in a
+continuous manner, using a hybrid control policy synthesized from the
+suite of local control policies and associated prepares graph.
+Repetitive tasks are naturally encoded in the framework, which allows
+the approach to induce limit cycle type behaviors.
+
+
+\subsection{Extension of Planning Tools}
+\label{sec:extend_planning}
+
+The demonstrations provided in this thesis highlight the power and flexibility of the
+policy composition approach.  They also point to several shortcomings that should be
+addressed in the discrete planning domain.  Addressing these issues will increase the
+power of the policy composition approach for the policies and systems described
+above.  
+%In some cases, there may be existing techniques that may be brought to bear
+%on synthesis of hybrid control policies for robotics.
+
+\paragraph{Sensor Automata and Composition}
+The automata synthesis approach described in \rechap{planning} depends on sensors
+that provide binary signals to the automata during run time.  As with the `Hazard'
+sensor, these ``sensors'' are often hybrid automata in their own right.  That is, the
+binary sensor values depend on a mixture of continuous variables and discrete logic.
+Defining these sensors is currently done on an \emph{ad hoc} basis.  Techniques are
+needed to synthesize these sensor automata, and prove that the composition of
+multiple sensor and control automata are valid, and preserve the desired
+specifications and liveness conditions.  An example, taken from the simulations in
+this thesis and the DARPA Urban Grand Challenge (UGC), is the need to resolve
+precedence at intersections and four-way stops.  Formal synthesis methods coupled
+with local policy composition offers a way to automate what is currently a labor
+intensive, error prone process; as evidenced by the failures of most of the teams
+that entered the DARPA UGC.
+
+\paragraph{Formal Recovery Methods and Global Synthesis}
+Disturbances are a fact of life.  Thus, the automata synthesis should include all
+available policies to maximize the domain over which the automata is valid, and have
+a formal method of recovery.  For the repetitive behaviors, such as patrolling,
+demonstrated in this thesis, it is sufficient to augment the automata with unused
+policies, and then search for a node that had the correct discrete sensor values and
+whose associated policy contained the current pose.  A more complex scenario, such as
+the mail delivery robot, will require a more formal recovery approach to allow the
+system to recover gracefully.  Instead of an \emph{ad hoc} approach, a formal and
+automated approach to defining a recovery strategy is desired.  The recovery approach
+should also include all policies to maximize the domain.
+
+\paragraph{Automata Synthesis with Heuristic Costs}
+A major shortcoming of the automata synthesis approaches demonstrated in this thesis
+is that they do not consider heuristic costs.  Within a given policy suite, there may
+be many policy combinations that will address a given scenario.  In fact, this is
+desirable for maximum planning flexibility.  The synthesis approach needs to be able
+rank different policy choices based on their relative cost.  Current techniques only
+consider the number of transitions made, that is the number of edges traversed in the
+graph walk, when choosing policies.  The focus of current techniques is on dealing
+with the state explosion problem using efficient data structures such as Binary
+Decision Diagrams (BDD)~\cite{Bryant_86,clarke_99}.  There has been some work in
+combining BDDs with heuristic search; for example, consider the Set\{A*\}
+approach~\cite{jensen_02}.  That work may prove fruitful for automata synthesis
+research.
+
+\paragraph{Automata Synthesis with Non-deterministic Outcomes}
+The automata synthesis used in this thesis only considered deterministic prepares
+graphs.  This eliminated the use of the extended prepares relationship.  There has
+been some work on defining sequence based approaches which allow non-deterministic
+prepares graphs~\cite{kloetzer_07}; however, the synthesis techniques for reactive
+automata do not allow non-deterministic transitions at this time.
+
+\paragraph{Automata Synthesis with Hybrid Stability Analysis}
+The stability of the order-based hybrid policies is based on the assumption of
+monotonic policy switching.  With automata, limit cycles are allowed.  In the hybrid
+systems community, it is well known that switching between stable vector fields can
+induce instability~\cite{Branicky:98b,decarlo_00,liberzon_99}.  While this is not an
+issue for the kinematic systems addressed in this thesis, stability analysis will be
+fundamental to more complex systems.  There are several approaches to analyzing the
+stability of existing hybrid systems~\cite{Branicky:98b,decarlo_00,liberzon_99};
+however, going in reverse, the synthesis problem must address this issue during
+construction.
+
+\vspace{0.5in}
+
+To conclude, this thesis advocates an approach to specifying robot controllers that
+respects low-level constraints by design, and provides a natural interface for
+specifying user intentions.  Low-level feedback control policies induce local
+behaviors in a guaranteed manner.  The user interacts at a high-level to specify
+intended behaviors.  The robot then automatically synthesizes a hybrid control policy
+that can realize the intention, or reports that the goal is not realizable for the
+current collection of policies and initial condition.  The hybrid control policy
+inherits the desirable properties of the local feedback policies, while guaranteeing
+the high-level behaviors.  This approach, which is demonstrated on a class of
+nonholonomically constrained systems in this thesis, is widely applicable, and
+likely necessary for the dynamically capable robots of the future.
+
+
+
